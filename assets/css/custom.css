@@ -1,0 +1,36 @@
+/*================================================================================
+	Item Name: Materialize - Material Design Admin Template
+	Version: 5.0
+	Author: PIXINVENT
+	Author URL: https://themeforest.net/user/pixinvent/portfolio
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN CSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+.req {
+	color:#F00;
+	margin:2px;
+}
+.myBtn {
+	color:#6B6F82;
+}
+.btnEdit {
+	color:#6B6F82;
+}
+.btnDelete {
+	color:#6B6F82;
+}
+.btnSettings {
+	color:#6B6F82;
+}
+.list-img {
+	width: 35px;
+	object-fit: contain;
+}
+.list-img-circle {
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
