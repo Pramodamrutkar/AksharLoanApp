@@ -42,10 +42,10 @@ class ApiController extends CI_Controller{
         {
             echo $this->ApiModel->saveLoanDetails();
         }
-        //have remove comments from the code.
-        public function getKycDetails(){
+
+       /*  public function getKycDetails(){
             echo $this->ApiModel->fetchKycDetails();
-        } 
+        } */
 
         public function statelist(){
             echo $this->ApiModel->StateList();
