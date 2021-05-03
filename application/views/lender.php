@@ -164,7 +164,7 @@ function listRow(){
 			$('#tableData').DataTable({
    			    "searching": false,
 				"bPaginate": false,
-				"destroy" : false,
+				"destroy" : true,
 				"data": result.resultArray,
 				"columns": 
 				[
@@ -205,11 +205,11 @@ function saveRow(frm){
 	},clearForm: false,resetForm: false,success: function (responseText, statusText, xhr, $form){
 		var result = JSON.parse(responseText);
 		if (result["Status"] == "true"){	
-			swal({text: result["Message"],icon: 'success',closeOnClickOutside: false,buttons: {delete: 'Ok'}}).then(function (willDelete){
-				if(willDelete){
+			swal({text: result["Message"],icon: 'success',closeOnClickOutside: false});
+				//if(willDelete){
 					listRow();
-				}
-			});
+				//}
+			//});
 		}else{
 			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}		
