@@ -53,6 +53,7 @@ table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.st
                     <tr>
                         <th style="text-align: center;"><input type="checkbox" class="checkAll" style="width:15px;height:15px;"></th>
                         <th>Borrower Name</th>
+                        <th>School Name</th>
                         <th>Loan Amount</th>
                         <th>Margin %</th>
                         <th>Amount to Disbursed</th>
@@ -172,7 +173,7 @@ function listrow(){
 					{"data": "loanID"},
           //{"data": "loanID"},
 					{"data": "pfirstName"},
-					//{"data": "plastName"},					
+					{"data": "schoolName"},					
 					{"data": "loanAmount"},
           {"data": "margin"},
           {"data": "AmountDisbursed"},
@@ -192,21 +193,21 @@ function listrow(){
             }
 						
 					}},          
-          //{targets: [0],visible: true},
-				  {targets: [1],visible: true,sorting:false,className : "uk-text-center",
+          {targets: [1],visible: true,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
 						return row.pfirstName+" "+row.plastName 
-					}}, 
+					}},
           {targets: [2],visible: true},
-          {targets: [3],visible: true},
-          {targets: [4],visible: true,sorting:false,className : "uk-text-center",
+				  {targets: [3],visible: true},
+          {targets: [4],visible: true},
+          {targets: [5],visible: true,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
 						 let percentAmount = ( row.loanAmount * row.margin / 100)
              return row.loanAmount - percentAmount
 					}},
-          {targets: [5],visible: true},
           {targets: [6],visible: true},
-          {targets: [7],visible: true,className : "text-center",
+          {targets: [7],visible: true},
+          {targets: [8],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
 						if(data == 0 ) {
 							return 'Application';

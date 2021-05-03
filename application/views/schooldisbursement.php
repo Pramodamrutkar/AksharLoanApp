@@ -33,8 +33,8 @@
                     <tr>
                         <th>Sr. No</th>
                         <th>School Name</th>
-                        <th>Disbursement Amount</th>
-                        <th>Margin %</th>
+                        <!-- <th>Disbursement Amount</th>
+                        <th>Margin %</th> -->
                         <th>Amount to Disbursed</th>
                         <th>Bank Name</th>
                         <th>Account No</th>
@@ -50,8 +50,8 @@
                           <tr>
                               <td><?php echo $i; ?></td>
                               <td><?php echo $row['schoolName']; ?></td>
-                              <td><?php echo $row['disbursementAmount']; ?></td>
-                              <td><?php echo $row['margin']; ?></td>
+                            <!--   <td><?php //echo $row['disbursementAmount']; ?></td>
+                              <td><?php //echo $row['margin']; ?></td> -->
                               <td><?php 
                               $percentAmount = (($row['disbursementAmount'] * $row['margin'])/100);
                               echo $amountTodisbursed = $row['disbursementAmount'] - $percentAmount;

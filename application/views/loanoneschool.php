@@ -382,7 +382,7 @@ function listrow(){
 				]
 			});
 		}else{
-			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
+			//swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}
 	},
 	error: function (jqXHR,textStatus,errorThrown ) {

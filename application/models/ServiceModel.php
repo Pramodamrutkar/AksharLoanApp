@@ -1429,7 +1429,7 @@ class ServiceModel extends CI_Model{
 	}
 
 	public function remittancereport(){
-		$sql   = "SELECT ld.*,pm.*,sm.*,scm.schoolID FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID = sm.schoolID WHERE ld.loanType=1";
+		$sql   = "SELECT ld.*,pm.*,sm.*,scm.schoolID,scm.schoolName FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID = sm.schoolID WHERE ld.loanType=1";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
@@ -1539,7 +1539,7 @@ class ServiceModel extends CI_Model{
 	public function getListofemiReport()
 	{
 		$currentDate = date('Y-m-d');
-		$sql   = "SELECT e.*,pm.* FROM `emischedule` as e INNER JOIN studentmaster as sm on sm.studentID=e.studentID INNER JOIN parentmaster pm on pm.parentID=sm.parentID WHERE e.ispaid = 0 AND e.`emiDuedate` LIKE '%$currentDate%'";
+		$sql   = "SELECT e.*,pm.* FROM `emischedule` as e INNER JOIN studentmaster as sm on sm.studentID=e.studentID INNER JOIN parentmaster pm on pm.parentID=sm.parentID WHERE e.ispaid = 0 AND e.`emiPaiddate` LIKE '%$currentDate%'";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}	

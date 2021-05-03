@@ -61,7 +61,7 @@
     </li> -->
     <li class="bold"><a class="waves-effect waves-cyan " href="<?php echo base_url();?>service/school"><i class="material-icons">school</i><span class="menu-title" data-i18n="Documentation">School</span></a> </li>
     <li class="bold"><a class="waves-effect waves-cyan " href="<?php echo base_url();?>service/lender"><i class="material-icons">group_add</i><span class="menu-title" data-i18n="Documentation">Lender</span></a> </li>
-    <li class="bold"><a class="waves-effect waves-cyan " href="<?php echo base_url();?>service/loanaddata"><i class="material-icons">source</i><span class="menu-title" data-i18n="Documentation">Loan Data</span></a> </li>
+    <!-- <li class="bold"><a class="waves-effect waves-cyan " href="<?php echo base_url();?>service/loanaddata"><i class="material-icons">source</i><span class="menu-title" data-i18n="Documentation">Loan Data</span></a> </li>-->
     <li class="bold"><a class="waves-effect waves-cyan " href="<?php echo base_url();?>service/approveData"><i class="material-icons">receipt</i><span class="menu-title" data-i18n="Documentation">Approve Data</span></a> </li>
     <li class="bold"><a class="collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i class="material-icons">receipt</i><span class="menu-title" data-i18n="Invoice">Reports</span></a>
       <div class="collapsible-body">

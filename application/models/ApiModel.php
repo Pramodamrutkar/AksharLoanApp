@@ -994,8 +994,8 @@ class ApiModel extends CI_Model{
 				$postData = array(
 					"paymentDetails" => json_encode($postArray["paymentDetails"]),
 					"emiStatus" => $postArray['emiStatus'],
-					
-					"updated"=>date('Y-m-d H:i:s')
+					"emiPaiddate" => date('Y-m-d H:i:s'),
+					"updated" => date('Y-m-d H:i:s')
 				);
 				$this->db->update("emischedule",$postData,array("emiID"=>$emiID));
 				$this->db->trans_complete();

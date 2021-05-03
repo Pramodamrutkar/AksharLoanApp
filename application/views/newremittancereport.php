@@ -35,7 +35,7 @@ table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.st
     <div class="breadcrumbs-inline pt-2" id="breadcrumbs-wrapper">
       <div class="container">
         <div class="row">
-          <div class="col s6 breadcrumbs-left">
+          <div class="col s6 breadcrumbs-left">   
             <h5 class="breadcrumbs-title mt-0 mb-0 display-inline hide-on-small-and-down"><span><?php echo $pageTitle;?></span></h5>
           </div>
         </div>
@@ -54,6 +54,7 @@ table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.st
                         <th style="text-align: center;"><input type="checkbox" class="checkAll" style="width:15px;height:15px;"></th>
                         <th>Parent Name</th>
                         <th>Student Name</th>
+                        <th>School Name</th>
                         <th>Amount</th>
                         <th>Transaction ID</th>
                         <th>Remit</th>
@@ -173,6 +174,7 @@ function listrow(){
 					{"data": "loanID"},
 					{"data": "pfirstName"},				
 					{"data": "sfirstName"},
+          {"data": "schoolName"},
 					{"data": "loanAmount"},
           {"data": "transactionDetails"},
 					{"data": "remitLoan"},
@@ -198,7 +200,8 @@ function listrow(){
 					}},
           {targets: [3],visible: true},
           {targets: [4],visible: true},
-          {targets: [5],visible: true,className : "text-center",
+          {targets: [5],visible: true},
+          {targets: [6],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
 						if(row.remitLoan == 0 ) {
 							return 'No';
