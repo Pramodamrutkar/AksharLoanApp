@@ -49,7 +49,7 @@
                               <td><?php echo $i; ?></td>
                               <td><?php echo $row['schoolName']; ?></td>
                               <td><?php echo $row['lenderName']; ?></td>
-                              <td><?php echo $row['count(ld.loanID)'];?></td>
+                              <td><?php echo (((isset($row['count(ld.loanID)']) && $row['count(ld.loanID)'] !='')) ? $row['count(ld.loanID)'] : 0);?></td>
                               <td><?php echo (((isset($row['lenderCount']) && $row['lenderCount'] !='')) ? $row['lenderCount'] : 0);?></td>
                               <td><?php if($row['schoolID'] != ''){?><a href="<?php echo base_url()."service/loanoneschool/".$row['schoolID']; ?>">View</a> <?php }else{ echo "View"; } ?></td>
                               <td><a href="<?php echo base_url()."service/lenderReport"?>" target="_blank">Download</a></td>

@@ -87,12 +87,13 @@ label.photosLabel{
 <div id="ModalBox" class="modal modal-fixed-footer" style="height: 60%;">
         <div class="modal-content">
               <button type="button" name="btnCancel2" id="btnCancel2" class="btnCancel2 btn waves-effect waves-light gradient-45deg-purple-deep-orange" style="float:right;"> <i class="material-icons left">close</i> Close</button>
-                <div class="row">
+
+                <div class="row" id="approvalblock">
                   <div class="col s12">
-                    <p>Approved Selected Record ?</p>
+                    <p>Send for Lender / Approve Selected Record ?</p>
                     <p>
                         <label>
-                        <input type="radio" name="isApproved" id="isApproved1" class="with-gap" value="1" checked>
+                        <input type="radio" name="isApproved" id="isApproved1" class="with-gap" value="1">
                         <span>Approve</span></label>
                     </p>
                     <p>
@@ -100,11 +101,14 @@ label.photosLabel{
                         <input type="radio" name="isApproved" id="isApproved2" class="with-gap" value="0">
                         <span>Reject</span></label>
                     </p>
-                    
-                    <div id="btnSubmit2" onclick="updateApproveselStatus()" class="btn waves-effect waves-light gradient-45deg-green-teal"> <i class="material-icons left">save</i>Submit</div>
+                      <p>
+                          <label>
+                          <input type="radio" name="isApproved" id="isApproved3" class="with-gap" value="2">
+                          <span>Send for lender</span></label>
+                      </p>
                 </div>
-
               </div>
+              <div id="btnSubmit2" onclick="updateApproveselStatus()" class="btn waves-effect waves-light gradient-45deg-green-teal"> <i class="material-icons left">save</i>Submit</div>
         </div>
     </div> <!----end of first modal-->
 
@@ -308,6 +312,7 @@ $(document).ready(function(){
   
 function getupdateclick(){
   $('#ModalBox').modal('open');
+
 }
 
 function listrow(){
@@ -343,7 +348,7 @@ function listrow(){
 				[
 					{targets: 0,visible: true ,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
-            if(row.isApproved == 4){
+            if(row.isApproved == 4 || row.isApproved == 5){
               return '<input type="checkbox" name="customerArray" class="customerCheckbox bz'+ row.loanID + '" value="'+ row.loanID + '" style="width:15px;height:15px;text-align:center;">'
             }else{
               return ''
@@ -373,6 +378,8 @@ function listrow(){
 							return 'Reject';
 						}else if(data == 4){
 							return 'Inprocess';
+						}else if(data == 5){
+							return 'Sent for Lender';
 						}
 					}},
 					{targets: [7],visible: true ,className : "text-center",sorting:false,
@@ -381,6 +388,7 @@ function listrow(){
 					}},
 				]
 			});
+      
 		}else{
 			//swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}
@@ -488,8 +496,9 @@ function updateApproveselStatus(){
     console.log(result);
 		if (result["Status"] == "true"){
       swal(result["Message"],{icon: "success",closeOnClickOutside: false});
-      listrow();
+      //listrow();
       $('.btnCancel2').trigger('click');
+      location.reload();
 		}else{
 			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}

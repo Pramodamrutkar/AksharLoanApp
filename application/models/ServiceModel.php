@@ -1344,7 +1344,7 @@ class ServiceModel extends CI_Model{
 	}
 
 	public function getLenderDetails(){
-		$sql   = "SELECT ld.*, sm.*, pm.*,scm.*,ld.address as loanAddress, ld.created as loandate,lm.lenderName FROM `loandetails` as ld INNER JOIN studentmaster as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.loanType=0 and ld.isApproved=4";
+		$sql   = "SELECT ld.*, sm.*, pm.*,scm.*,ld.address as loanAddress, ld.created as loandate,lm.lenderName FROM `loandetails` as ld INNER JOIN studentmaster as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.loanType=0 and ld.isApproved=5";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
@@ -1353,9 +1353,10 @@ class ServiceModel extends CI_Model{
 		$sql = "SELECT count(ld.loanID),scm.schoolName,scm.schoolID,lm.lenderName FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.isApproved IN (0) and ld.loanType=0 and ld.isKyc <> 2 GROUP BY scm.schoolID";
 		$query = $this->db->query($sql);
 		$sqlOneResult = $query->result_array();
-		$sql2 = "SELECT count(ld.loanID) as lenderCount, scm.schoolID FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.isApproved = 4 and ld.loanType=0";
+		$sql2 = "SELECT count(ld.loanID) as lenderCount, scm.schoolName,scm.schoolID,lm.lenderName, scm.schoolID FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.isApproved = 5 and ld.loanType=0";
 		$query2 = $this->db->query($sql2);
 		$sqltwoResult = $query2->result_array();
+	//	print_r($sqlOneResult); print_r($sqltwoResult); die;
 		$result = array();
 		foreach($sqlOneResult as $k => $v){
 			foreach($sqltwoResult as $k1 => $v1){
@@ -1367,20 +1368,23 @@ class ServiceModel extends CI_Model{
 			}
 			$result[] = $v;
 		}
+		if(empty($sqlOneResult)){
+			$result = $sqltwoResult;
+		}
 		return $result;
 
 	}
 	public function loansoneschool(){
 		$postArray = $this->input->post();
 		$schoolID = $postArray['schoolID'];
-		$sql   = "SELECT ld.isKyc,ld.loanID,ld.loanAmount,ld.loantenure,scm.schoolName,sm.sfirstName,sm.slastName, pm.pfirstName,pm.plastName,ld.isApproved FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID WHERE scm.schoolID=$schoolID and ld.isApproved IN (0,4) and ld.loanType=0 and ld.isKyc <> 2";
+		$sql   = "SELECT ld.isKyc,ld.loanID,ld.loanAmount,ld.loantenure,scm.schoolName,sm.sfirstName,sm.slastName, pm.pfirstName,pm.plastName,ld.isApproved FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID WHERE scm.schoolID=$schoolID and ld.isApproved IN (0,4,5) and ld.loanType=0 and ld.isKyc <> 2";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
 	public function loandetailsPopup(){
 		$postArray = $this->input->post();
 		$loanID = $postArray['loanID'];
-		$sql   = "SELECT ld.*,pm.*,sm.* FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID WHERE ld.loanID=$loanID";
+		$sql   = "SELECT ld.*,pm.*,sm.*,ld.isApproved as loanApprovedcolumn FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID WHERE ld.loanID=$loanID";
 		$query = $this->db->query($sql);
 		return $query->row_array();
 	}
@@ -1429,18 +1433,21 @@ class ServiceModel extends CI_Model{
 	}
 
 	public function remittancereport(){
-		$sql   = "SELECT ld.*,pm.*,sm.*,scm.schoolID,scm.schoolName FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID = sm.schoolID WHERE ld.loanType=1";
+		$sql   = "SELECT ld.*,pm.*,sm.*,scm.schoolID,scm.schoolName, DATE_FORMAT(ld.created,'%D-%M-%Y') as remittancedate FROM loandetails as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID = sm.schoolID WHERE ld.loanType=1";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}
 
 	public function updateApprovedstatusfromReport(){
 		$postArray = $this->input->post();
-		if($postArray['approveRejectStatus'] == 1){
+		if($postArray['approveRejectStatus'] == 2){
+			$isApproved = 5; //send for lender 
+		}else if($postArray['approveRejectStatus'] == 1){
 			$isApproved = 1; //approved e.g refer colum comment
 		}else if($postArray['approveRejectStatus'] == 0){
 			$isApproved = 2; //reject e.g refer colum comment
 		}
+			
 		foreach($postArray["loanIDArray"] as $k => $row){
 			$postData[] = array(
 				"isApproved"=> $isApproved,

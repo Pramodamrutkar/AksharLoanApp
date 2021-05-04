@@ -57,6 +57,7 @@ table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.st
                         <th>School Name</th>
                         <th>Amount</th>
                         <th>Transaction ID</th>
+                        <th>Date</th>
                         <th>Remit</th>
                     </tr>
                     </thead>
@@ -177,6 +178,7 @@ function listrow(){
           {"data": "schoolName"},
 					{"data": "loanAmount"},
           {"data": "transactionDetails"},
+          {"data": "remittancedate"},
 					{"data": "remitLoan"},
 				],
 				columnDefs: 
@@ -201,7 +203,8 @@ function listrow(){
           {targets: [3],visible: true},
           {targets: [4],visible: true},
           {targets: [5],visible: true},
-          {targets: [6],visible: true,className : "text-center",
+          {targets: [6],visible: true},
+          {targets: [7],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
 						if(row.remitLoan == 0 ) {
 							return 'No';
