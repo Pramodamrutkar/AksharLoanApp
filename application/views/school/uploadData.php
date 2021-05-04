@@ -26,7 +26,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
         $val=1;
         while($month < $end){
             $selected = (date('F', $month) == date('F')) ? ' selected' : 'disabled';
-            echo '<option'.$selected.' value='.$val.'>'.date('F', $month).'</option>'."\n";
+            echo '<option'.$selected.' value='.date('m').'>'.date('F', $month).'</option>'."\n";
             $month = strtotime("+1 month", $month);
                 $val++;
         }

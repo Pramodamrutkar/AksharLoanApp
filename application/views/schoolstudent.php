@@ -69,13 +69,19 @@
             <label for="slastName"><span class="req">*</span>Student Last Name</label>
           </div>
         </div>
-        <div class="col s6">
+        <div class="col s4">
           <div class="input-field">
             <input type="text" id="pfirstName" name="pfirstName">
             <label for="pfirstName">Parent First Name</label>
           </div>
         </div>
-		<div class="col s6">
+		<div class="col s4">
+          <div class="input-field">
+            <input type="text" id="pmiddleName" name="pmiddleName">
+            <label for="pmiddleName">Parent Middle Name</label>
+          </div>
+        </div>
+		<div class="col s4">
           <div class="input-field">
             <input type="text" id="plastName" name="plastName">
             <label for="plastName">Parent Last Name</label>
@@ -343,6 +349,7 @@ function getRow(studentID){
 			$("#sfirstName").val(row["sfirstName"]);
 			$("#slastName").val(row["slastName"]);
 			$("#pfirstName").val(row["pfirstName"]);
+			$("#pmiddleName").val(row["pmiddleName"]);
 			$("#plastName").val(row["plastName"]);
 			$("#relationship").val(row["relationship"]);
 			$("#gender").val(row["gender"]);

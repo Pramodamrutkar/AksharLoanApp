@@ -342,6 +342,7 @@ class ServiceModel extends CI_Model{
 		$postData1 = array(
 			"pfirstName"=>$postArray["pfirstName"],
 			"plastName"=>$postArray["plastName"],
+			"pmiddleName"=>$postArray["pmiddleName"],
 			"mobileNo"=>$postArray["mobileNo"],
 			"accessToken" => 'P'.md5($postArray["mobileNo"]),
 			"created"=>date('Y-m-d H:i:s')
@@ -385,6 +386,7 @@ class ServiceModel extends CI_Model{
 		$postData = array(
 			"pfirstName"=>$postArray["pfirstName"],
 			"plastName"=>$postArray["plastName"],
+			"pmiddleName"=>$postArray["pmiddleName"],
 			"mobileNo"=>$postArray["mobileNo"],
 			"updated"=>date('Y-m-d H:i:s')
 		);
@@ -759,49 +761,50 @@ class ServiceModel extends CI_Model{
 		$schoolID = $FilesRecord->schoolID;
 		array_shift($sheetData); //Removed first row of the Excel sheet i.e First Element
 		$i = 0;
+	
 		if($isAdmin == 1){
 			if(!empty($sheetData)){
 				foreach($sheetData as $row){
 					//$parentSQL = "SELECT * FROM parentmaster WHERE pfirstName LIKE '%".strtolower($row['F'])."%' AND plastName LIKE '%".strtolower($row['G'])."%' AND mobileNo=".$row['I']."";
-					if(!empty($row['I'])){
-							$parentSQL = "SELECT * FROM parentmaster WHERE mobileNo=".$row['I']."";
+					if(!empty($row['J'])){
+							$parentSQL = "SELECT * FROM parentmaster WHERE mobileNo=".$row['J']."";
 							$queryParent = $this->db->query($parentSQL);
 							$parentArray = $queryParent->row_array();
 							if(empty($parentArray)){
-								$parentID = $this->saveParent(array($row['F'],$row['G'],$row['I']),$row['L']);
+								$parentID = $this->saveParent(array($row['F'],$row['G'],$row['H'],$row['J'],$row['M']));
 								$data['parentID']  = $parentID;
 								$data['sfirstName']  = $row['A'];
 								$data['slastName']  = $row['B'];
 								$data['standard']  = $row['C'];
 								$data['section']  = $row['D'];
 								$data['relationship']  = $row['E'];
-								$data['gender']  = $row['H'];
+								$data['gender']  = $row['I'];
 								$data['schoolID']  = $schoolID;
 								$data['isDeleted']  = 0;
 								$data['isActive']  = 1;
 								$data['isApproved']  = 1;
-								$data['annualFee']  = str_replace(",", "", $row['J']);
-								$data['currentPayableFees']  = str_replace(",", "", $row['K']);
+								$data['annualFee']  = str_replace(",", "", $row['K']);
+								$data['currentPayableFees']  = str_replace(",", "", $row['L']);
 								$data['created']  = date('Y-m-d H:i:s');
 								
 								$this->db->insert("studentmaster",$data);
 								$studentID = $this->db->insert_id();	
 								$this->saveOutstandingAmountLog(array($studentID,$data['created'],$data['currentPayableFees']));	
 							}else{
-								$checkData = $this->checkpayableFeeschange(array($row['A'],$row['B'],$row['I']));
+								$checkData = $this->checkpayableFeeschange(array($row['A'],$row['B'],$row['J']));
 								$data['parentID']  = $parentArray['parentID'];
 								$data['sfirstName']  = $row['A'];
 								$data['slastName']  = $row['B'];
 								$data['standard']  = $row['C'];
 								$data['section']  = $row['D'];
 								$data['relationship']  = $row['E'];
-								$data['gender']  = $row['H'];
+								$data['gender']  = $row['I'];
 								$data['schoolID']  = $schoolID;
 								$data['isDeleted']  = 0;
 								$data['isActive']  = 1;
 								$data['isApproved']  = 1;
-								$data['annualFee']  = str_replace(",", "", $row['J']);
-								$data['currentPayableFees']  = str_replace(",", "", $row['K']);
+								$data['annualFee']  = str_replace(",", "", $row['K']);
+								$data['currentPayableFees']  = str_replace(",", "", $row['L']);
 								
 								if(!empty($checkData)){
 									$data['updated']  = date('Y-m-d H:i:s');
@@ -857,6 +860,7 @@ class ServiceModel extends CI_Model{
 				$postData = array(
 					"approvedReasonbyAdmin"=>$approvedReasonbyAdmin,
 					"isApprovedbyAdmin"=> 1,
+					"approvedAdminDate" => date('Y-m-d H:i:s'),
 					"updated" => date('Y-m-d H:i:s')
 				);
 				$this->db->update("approvefiles",$postData,array("fileName"=>$uploadedFilename));		
@@ -870,10 +874,11 @@ class ServiceModel extends CI_Model{
 	function saveParent($postArray){
 		$postData = array(
 			"pfirstName"=> $postArray[0],
-			"pLastName"=> $postArray[1],
-			"mobileNo"=> $postArray[2],		
-			"accessToken" => 'P'.md5($postArray[2]),
-			"recommendLoan" => $postArray[3],
+			"pmiddleName" => $postArray[1],
+			"pLastName"=> $postArray[2],
+			"mobileNo"=> $postArray[3],		
+			"accessToken" => 'P'.md5($postArray[3]),
+			"recommendLoan" => $postArray[4],
 			"created"=>date('Y-m-d H:i:s')
 		);
 		$this->db->insert("parentmaster",$postData);
@@ -976,7 +981,7 @@ class ServiceModel extends CI_Model{
 		array_shift($sheet_data);
 		$message = array();
 		foreach($sheet_data as $row){
-			if(empty($row['I']) || strlen($row['I']) != 10 || !is_numeric($row['I']) ){
+			if(empty($row['J']) || strlen($row['J']) != 10 || !is_numeric($row['J']) ){
 				$message[$row['A']." ".$row['B']][] = "Mobile No is Invalid or blank";
 			}
 		}
