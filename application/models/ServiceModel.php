@@ -1499,7 +1499,9 @@ class ServiceModel extends CI_Model{
 			$query = $this->db->query($sql);
 			$loanIdArray = $query->result_array();
 		}		
+		
 		$arrayLoanIDs = array_column($loanIdArray,'loanID');	
+		
 		if($postArray['approveRejectStatus'] == 1){
 			$remitLoan = 2; //complete e.g refer remitLoan column comment
 		}
