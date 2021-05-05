@@ -1348,8 +1348,8 @@ class ServiceModel extends CI_Model{
 		return $query->row_array();
 	}
 
-	public function getLenderDetails(){
-		$sql   = "SELECT ld.*, sm.*, pm.*,scm.*,ld.address as loanAddress, ld.created as loandate,lm.lenderName FROM `loandetails` as ld INNER JOIN studentmaster as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.loanType=0 and ld.isApproved=5";
+	public function getLenderDetails($schoolID,$lenderID){
+		$sql   = "SELECT ld.*, sm.*, pm.*,scm.*,ld.address as loanAddress, ld.created as loandate,lm.lenderName FROM `loandetails` as ld INNER JOIN studentmaster as sm on sm.studentID=ld.studentID INNER JOIN parentmaster as pm on pm.parentID=sm.parentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE scm.schoolID=$schoolID AND ld.lenderID=$lenderID AND ld.loanType=0 and ld.sentLender=1 AND ld.isApproved IN(1)";
 		$query = $this->db->query($sql);
 		return $query->result_array();
 	}

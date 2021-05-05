@@ -28,13 +28,7 @@ label.photosLabel{
 .separatorImages{
   margin:10px 0px;
 }
-button.dt-button.buttons-excel.buttons-html5{
-  position: relative !important;
-  top: 45px !important;
-  -webkit-appearance: auto;
-    font-size: 15px;
-    padding: 5px 10px;
-}
+
 .tabs .tab a.active, .tabs .tab a:hover{
   background-color: #ddd;
 }
@@ -114,7 +108,7 @@ button.dt-button.buttons-excel.buttons-html5{
                     </tbody>
                       <tfoot>
                         <tr>
-                            <td><button type="submit" name="btnSubmit2" id="btnSubmit2" onclick="getupdateclick();">Update</button></th></td>
+                            <td><button type="submit" name="btnSubmit2" class="btn waves-effect waves-light gradient-45deg-green-teal" id="btnSubmit2" onclick="getupdateclick();">Update</button></th></td>
                             <td></td><td></td><td></td><td></td><td></td><td></td>
                         </tr>
                       </tfoot>
@@ -137,7 +131,7 @@ button.dt-button.buttons-excel.buttons-html5{
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td><button type="submit" name="btnSubmit3" id="btnSubmit3" onclick="getupdateclick2();">Update</button></th></td>
+                            <td><button type="submit" name="btnSubmit3" id="btnSubmit3" class="btn waves-effect waves-light gradient-45deg-green-teal" onclick="getupdateclick2();">Update</button></th></td>
                             <td></td><td></td><td></td><td></td><td></td><td></td>
                         </tr>
                       </tfoot>

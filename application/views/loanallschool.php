@@ -54,7 +54,7 @@
                               <td><?php echo $row['inprocessCount'];?></td>
                               <td><?php echo $row['lenderCount'];?></td>
                               <td><a href="<?php echo base_url()."service/loanoneschool/".$row['schoolID']."/".$row['lenderID']; ?>">View</a></td>
-                              <td><a href="<?php echo base_url()."service/lenderReport"?>" target="_blank">Download</a></td>
+                              <td><a href="<?php echo base_url()."service/lenderReport/".$row['schoolID']."/".$row['lenderID']; ?>" target="_blank">Download</a></td>
                           </tr>
                     <?php $i++; } ?>
                   </tbody>

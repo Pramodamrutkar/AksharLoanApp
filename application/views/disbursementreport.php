@@ -67,8 +67,8 @@ table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.st
                     </tbody>
                     <tfoot>
                         <tr>
-                        <th><button id="updatebtn" onclick="getupdateclick();">Update</button></th>
-                        <th></th>
+                        <th><button id="updatebtn" class="btn waves-effect waves-light gradient-45deg-green-teal" onclick="getupdateclick();">Update</button></th>
+                        <th></th><th></th><th></th><th></th><th></th><th></th><th></th><th></th>
                         </tr>
                     </tfoot>
                 </table>

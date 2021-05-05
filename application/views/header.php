@@ -332,3 +332,13 @@
   </ul>
   <div class="navigation-background"></div>
   <a class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only" href="#" data-target="slide-out"><i class="material-icons">menu</i></a> </aside>
+<style>
+  button.dt-button.buttons-excel.buttons-html5{
+  position: relative !important;
+  top: 45px !important;
+  -webkit-appearance: auto;
+    font-size: 15px;
+    padding: 5px 10px;
+    margin:0px 25px;
+}
+</style>

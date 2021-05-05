@@ -938,9 +938,9 @@ class Service extends CI_Controller {
 		$this->load->view('schoolview',$data);
 	}
 	
-	public function lenderReport()
+	public function lenderReport($schoolID,$lenderID)
 	{
-		$data = $this->ServiceModel->getLenderDetails();
+		$data = $this->ServiceModel->getLenderDetails($schoolID,$lenderID);
 		$this->load->view('lenderReport',array('data'=>$data));
 	}
 
