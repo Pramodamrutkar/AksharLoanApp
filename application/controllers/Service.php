@@ -723,9 +723,9 @@ class Service extends CI_Controller {
 		$data = $this->ServiceModel->loanAllschool();
 		$this->load->view('loanallschool', array('data'=>$data));
 	}
-	public function loanoneschool($schoolID)
+	public function loanoneschool($schoolID,$lenderID)
 	{
-		$this->load->view('loanoneschool',array('data'=>$schoolID));
+		$this->load->view('loanoneschool',array('schoolID'=>$schoolID,"lenderID"=>$lenderID));
 	}
 
 	public function loanoneschooldata()
@@ -741,6 +741,33 @@ class Service extends CI_Controller {
 		echo json_encode(array("Status" => $Status,"Message" => $Message,'resultArray' => $resultArray));
 	}
 
+	public function loanoneschooldatalender()
+	{
+		$resultArray = $this->ServiceModel->loansoneschoolLender();
+		if($resultArray){
+			$Status = "true";
+			$Message = "Data Found";
+		}else{
+			$Status = "false";
+			$Message = "No Data Found.";
+		}
+		echo json_encode(array("Status" => $Status,"Message" => $Message,'resultArray' => $resultArray));
+	}
+
+	public function loanoneschooldataapproved()
+	{
+		$resultArray = $this->ServiceModel->loansoneschoolApproved();
+		if($resultArray){
+			$Status = "true";
+			$Message = "Data Found";
+		}else{
+			$Status = "false";
+			$Message = "No Data Found.";
+		}
+		echo json_encode(array("Status" => $Status,"Message" => $Message,'resultArray' => $resultArray));
+	}
+
+	
 	public function getloandetailsPopup(){
 		$resultArray = $this->ServiceModel->loandetailsPopup();
 		if($resultArray){

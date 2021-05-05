@@ -180,18 +180,14 @@ function listrow(){
           
           {"data": "loantenure"},
 					{"data": "schoolName"},
-					{"data": "isApproved"},
+					{"data": "isDisbursement"},
 				],
 				columnDefs: 
 				[
 					{targets: 0,visible: true ,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
-            if(row.isApproved == 1){
                 return '<input type="checkbox" name="customerArray" class="customerCheckbox bz'+ row.loanID + '" value="'+ row.loanID + '" style="width:15px;height:15px;text-align:center;">'
-            }else{
-              return ''
-            }
-						
+           	
 					}},          
           {targets: [1],visible: true,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
@@ -209,15 +205,9 @@ function listrow(){
           {targets: [7],visible: true},
           {targets: [8],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
-						if(data == 0 ) {
-							return 'Application';
-						}else if(data == 1){
-							return 'Ready for Disbursed';
-						}else if(data == 2){
-							return 'Reject';
-						}else if(data == 4){
-							return 'Inprocess';
-						}else if(data == 3){
+						if(row.isDisbursement == 0 ) {
+							return 'Ready for Disburse';
+						}else if(row.isDisbursement == 1){
 							return 'Disbursed';
 						}
 					}},
@@ -246,8 +236,8 @@ function updateApproveselStatus(){
     console.log(result);
 		if (result["Status"] == "true"){
       swal(result["Message"],{icon: "success",closeOnClickOutside: false});
-      listrow();
       $('.btnCancel2').trigger('click');
+      location.reload();
 		}else{
 			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}

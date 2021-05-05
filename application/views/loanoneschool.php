@@ -19,7 +19,6 @@
      opacity: 1 !important; 
      cursor:pointer;
 }
-
 table.dataTable.display tbody tr.odd>.sorting_1, table.dataTable.order-column.stripe tbody tr>.sorting_1{
   text-align:center;
 }
@@ -28,6 +27,24 @@ label.photosLabel{
 }
 .separatorImages{
   margin:10px 0px;
+}
+button.dt-button.buttons-excel.buttons-html5{
+  position: relative !important;
+  top: 45px !important;
+  -webkit-appearance: auto;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+.tabs .tab a.active, .tabs .tab a:hover{
+  background-color: #ddd;
+}
+.tabs .tab a:focus, .tabs .tab a:focus.active{
+  background-color: #ddd;
+}
+.tabs .tab a{
+  color:#000;
+  font-size:15px;
+  font-weight: 800;
 }
 </style>
 </head>
@@ -50,32 +67,87 @@ label.photosLabel{
     <div class="row">
       <div class="col s12">
         <div class="container">
+        
           <div class="card">
             <div class="card-content">
-            <table id="tableData" class=" stripe row-border order-column nowrap" style="width:100%;">
+
+  <div class="row">
+      <div class="col s12">
+        <ul class="tabs waves-effect waves-light gradient-45deg-green-teal">
+          <li class="tab col m3"><a class="active" href="#test1" onclick="getKycData()">KYC Section</a></li>
+          <li class="tab col m3"><a href="#test2" onclick="getSenderData()">Send For Lender</a></li>
+          <li class="tab col m3"><a href="#test3"  onclick="getApproveData()">Approved Section</a></li>
+        </ul>
+      </div>
+      <div id="test1" class="col s12"> 
+              <table id="tableData" class=" stripe row-border order-column nowrap" style="width:100%;">
                     <thead>
-                    <tr>
-                        <th style="text-align: center;"><input type="checkbox" class="checkAll" style="width:15px;height:15px;"></th>
-                        <th>Borrower Name</th>
-                        <th>Student Name</th>
-                        <th>Loan Amount</th>
-                        <th>Tenure</th>
-                        <th>School Name</th>
-                        <th>Status</th>
-                        <th>View</th>
-                    </tr>
+                        <tr>
+                            <th>loan ID</th>
+                            <th>Borrower Name</th>
+                            <th>Student Name</th>
+                            <th>Loan Amount</th>
+                            <th>Tenure</th>
+                            <th>School Name</th>
+                            <th>Status</th>
+                            <th>View</th>
+                        </tr>
                     </thead>
                     <tbody>
-                   
+                    </tbody>
+                </table>
+      </div>
+      <div id="test2" class="col s12">
+                <table id="tableData2" class=" stripe row-border order-column nowrap" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;"><input type="checkbox" class="checkAll" style="width:15px;height:15px;"></th>
+                            <th>Borrower Name</th>
+                            <th>Student Name</th>
+                            <th>Loan Amount</th>
+                            <th>Tenure</th>
+                            <th>School Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                      <tfoot>
+                        <tr>
+                            <td><button type="submit" name="btnSubmit2" id="btnSubmit2" onclick="getupdateclick();">Update</button></th></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
+                        </tr>
+                      </tfoot>
+                </table>
+      </div>
+      <div id="test3" class="col s12">
+                <table id="tableData3" class=" stripe row-border order-column nowrap" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: center;"><input type="checkbox" class="checkAll2" style="width:15px;height:15px;"></th>
+                            <th>Borrower Name</th>
+                            <th>Student Name</th>
+                            <th>Loan Amount</th>
+                            <th>Tenure</th>
+                            <th>School Name</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                     </tbody>
                     <tfoot>
                         <tr>
-                        <th>
-                          <button type="submit" name="btnSubmit2" id="btnSubmit2" onclick="getupdateclick();">Update</button></th>
-                        <th></th>
+                            <td><button type="submit" name="btnSubmit3" id="btnSubmit3" onclick="getupdateclick2();">Update</button></th></td>
+                            <td></td><td></td><td></td><td></td><td></td><td></td>
                         </tr>
-                    </tfoot>
+                      </tfoot>
                 </table>
+      </div>
+      
+  </div>
+
+            
+        
                 <div id="tablerow"></div>
             </div>
           </div>
@@ -90,7 +162,25 @@ label.photosLabel{
 
                 <div class="row" id="approvalblock">
                   <div class="col s12">
-                    <p>Send for Lender / Approve Selected Record ?</p>
+                    <p>Send for Lender?</p>
+                      <p>
+                          <label>
+                          <input type="radio" name="sendforlender" id="sendforlender" class="with-gap" value="1">
+                          <span>Send for lender</span></label>
+                      </p>
+                </div>
+              </div>
+              <div id="btnSubmit2" onclick="updateApproveselStatus()" class="btn waves-effect waves-light gradient-45deg-green-teal"> <i class="material-icons left">save</i>Submit</div>
+        </div>
+</div> <!----end of first modal-->
+
+<div id="ModalBoxApprove" class="modal modal-fixed-footer" style="height: 60%;">
+        <div class="modal-content">
+              <button type="button" name="btnCancel3" id="btnCancel3" class="btnCancel3 btn waves-effect waves-light gradient-45deg-purple-deep-orange" style="float:right;"> <i class="material-icons left">close</i> Close</button>
+
+                <div class="row" id="approvalblock">
+                  <div class="col s12">
+                    <p>Approve Selected Record ?</p>
                     <p>
                         <label>
                         <input type="radio" name="isApproved" id="isApproved1" class="with-gap" value="1">
@@ -101,16 +191,11 @@ label.photosLabel{
                         <input type="radio" name="isApproved" id="isApproved2" class="with-gap" value="0">
                         <span>Reject</span></label>
                     </p>
-                      <p>
-                          <label>
-                          <input type="radio" name="isApproved" id="isApproved3" class="with-gap" value="2">
-                          <span>Send for lender</span></label>
-                      </p>
                 </div>
               </div>
               <div id="btnSubmit2" onclick="updateApproveselStatus()" class="btn waves-effect waves-light gradient-45deg-green-teal"> <i class="material-icons left">save</i>Submit</div>
         </div>
-    </div> <!----end of first modal-->
+</div>
 
 <div id="ModalBox2" class="modal modal-fixed-footer">
   <form name="frm" id="frm" method="post" enctype="multipart/form-data" class="uk-form-stacked">
@@ -236,14 +321,17 @@ $(document).ready(function(){
   $(".checkAll").click(function(){
 		$(':checkbox.customerCheckbox').prop('checked', this.checked);  
   });
+  $(".checkAll2").click(function(){
+		$(':checkbox.customerCheckbox2').prop('checked', this.checked);  
+  });
+  
 
-  var table =  $('#tableData').DataTable( {
-    dom: 'Bfrtip',
+  var table =  $('#tableData,#tableData2,#tableData3').DataTable( {
+      dom: 'Bfrtip',
       "bPaginate": false,
       buttons: [
           'excelHtml5'
       ],
-      scrollX:        true,
       fixedColumns:   {
           leftColumns: 0
       },
@@ -259,11 +347,10 @@ $(document).ready(function(){
       order: [[ 1, 'asc' ]]
   });
 
-  listrow();
-
+  getKycData();
   $('#ModalBox').modal({dismissible:false});
   $('#ModalBox2').modal({dismissible:false});
-  
+  $('#ModalBoxApprove').modal({dismissible:false});
   
   $('#tableData').on('click', 'a.btnEdit', function (e){	
       var table = $('#tableData').DataTable();
@@ -306,17 +393,23 @@ $(document).ready(function(){
   $('.btnCancel').click(function(){
 		$('#ModalBox2').modal('close');		
 	});	
+  $('.btnCancel3').click(function(){
+		$('#ModalBoxApprove').modal('close');		
+	});	
+  
  
 });
 
   
 function getupdateclick(){
   $('#ModalBox').modal('open');
-
+}
+function getupdateclick2(){
+  $('#ModalBoxApprove').modal('open');
 }
 
-function listrow(){
-  $.ajax({url: serviceUrl+'loanoneschooldata',type: "POST",data:{'schoolID':'<?php echo $data; ?>'},success: function (respsone){
+function getKycData(){
+  $.ajax({url: serviceUrl+'loanoneschooldata',type: "POST",data:{'schoolID':'<?php echo $schoolID; ?>', 'lenderID':'<?php echo $lenderID; ?>'},success: function (respsone){
 		var result = JSON.parse(respsone);
 		if (result["Status"] == "true"){		
 			$('#tableData').DataTable({
@@ -346,7 +439,7 @@ function listrow(){
 				],
 				columnDefs: 
 				[
-					{targets: 0,visible: true ,sorting:false,className : "uk-text-center",
+				/* 	{targets: 0,visible: true ,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
             if(row.isApproved == 4 || row.isApproved == 5){
               return '<input type="checkbox" name="customerArray" class="customerCheckbox bz'+ row.loanID + '" value="'+ row.loanID + '" style="width:15px;height:15px;text-align:center;">'
@@ -354,7 +447,88 @@ function listrow(){
               return ''
             } 
 						
-					}},          
+					}}, */          
+          {targets: [0],visible: false},
+					{targets: [1],visible: true,sorting:false,className : "uk-text-center",
+					render: function ( data, type, row, meta ) {
+						return row.pfirstName+" "+row.plastName
+					}},
+          {targets: [2],visible: true,sorting:false,className : "uk-text-center",
+					render: function ( data, type, row, meta ) {
+						return row.sfirstName+" "+row.slastName
+					}},
+          //{targets: [2],visible: true},
+          {targets: [3],visible: true},
+          {targets: [4],visible: true},
+          {targets: [5],visible: true},
+          {targets: [6],visible: true,className : "text-center",
+					render: function ( data, type, row, meta ) {
+						if(row['isApproved'] == 0 ) {
+							return 'Application';
+						}else if(row['isApproved'] == 1){
+							return 'Inprocess';
+						}else if(row['isApproved'] == 2){
+							return 'Approved';
+						}else if(data == 3){
+							return 'Reject';
+						}
+					}},
+					{targets: [7],visible: true ,className : "text-center",sorting:false,
+					render: function ( data, type, row, meta ) {
+						return '<a href="javascript:void(0);" class=\"btnEdit material-icons\">visibility</a>'
+					}},
+				]
+			});
+      
+		}else{
+			//swal(result["Message"],{icon: "error",closeOnClickOutside: false});
+		}
+	},
+	error: function (jqXHR,textStatus,errorThrown ) {
+		console.log(jqXHR);
+		console.log(textStatus);
+		console.log(errorThrown);
+		console.log("Error: " + textStatus);
+	}});
+}
+
+function getSenderData(){
+  $.ajax({url: serviceUrl+'loanoneschooldatalender',type: "POST",data:{'schoolID':'<?php echo $schoolID; ?>', 'lenderID':'<?php echo $lenderID; ?>'},success: function (respsone){
+		var result = JSON.parse(respsone);
+		if (result["Status"] == "true"){		
+			$('#tableData2').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'excelHtml5'
+        ],
+   			"searching": true,
+				"bPaginate": false,
+				"destroy" : true,
+        "fnAdjustColumnSizing":false,
+				"data": result.resultArray,
+        /* "fnRowCallback" : function(nRow, aData, iDisplayIndex){
+                $("td:first", nRow).html(iDisplayIndex +1);
+               return nRow;
+            }, */
+      	"columns": 
+				[
+					{"data": "loanID"},
+          //{"data": "loanID"},
+					{"data": "pfirstName"},
+					{"data": "sfirstName"},					
+					{"data": "loanAmount"},
+					{"data": "loantenure"},
+					{"data": "schoolName"},
+					{"data": "isApproved"},
+					
+				],
+				columnDefs: 
+				[
+				 {targets: 0,visible: true ,sorting:false,className : "uk-text-center",
+					render: function ( data, type, row, meta ) {
+              return '<input type="checkbox" name="customerArray" class="customerCheckbox bz'+ row.loanID + '" value="'+ row.loanID + '" style="width:15px;height:15px;text-align:center;">'
+            
+					}},           
           //{targets: [0],visible: true},
 					{targets: [1],visible: true,sorting:false,className : "uk-text-center",
 					render: function ( data, type, row, meta ) {
@@ -370,22 +544,83 @@ function listrow(){
           {targets: [5],visible: true},
           {targets: [6],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
-						if(data == 0 ) {
+						if(row['isApproved'] == 0 ) {
 							return 'Application';
-						}else if(data == 1){
-							return 'Approved';
-						}else if(data == 2){
-							return 'Reject';
-						}else if(data == 4){
+						}else if(row['isApproved'] == 1){
 							return 'Inprocess';
-						}else if(data == 5){
-							return 'Sent for Lender';
+						}else if(row['isApproved'] == 2){
+							return 'Approved';
+						}else if(data == 3){
+							return 'Reject';
 						}
 					}},
-					{targets: [7],visible: true ,className : "text-center",sorting:false,
-					render: function ( data, type, row, meta ) {
-						return '<a href="javascript:void(0);" class=\"btnEdit material-icons\">visibility</a>'
+				
+				]
+			});
+      
+		}else{
+			//swal(result["Message"],{icon: "error",closeOnClickOutside: false});
+		}
+	},
+	error: function (jqXHR,textStatus,errorThrown ) {
+		console.log(jqXHR);
+		console.log(textStatus);
+		console.log(errorThrown);
+		console.log("Error: " + textStatus);
+	}});
+}
+
+function getApproveData(){
+  $.ajax({url: serviceUrl+'loanoneschooldataapproved',type: "POST",data:{'schoolID':'<?php echo $schoolID; ?>', 'lenderID':'<?php echo $lenderID; ?>'},success: function (respsone){
+		var result = JSON.parse(respsone);
+		if (result["Status"] == "true"){		
+			$('#tableData3').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'excelHtml5'
+        ],
+   			"searching": true,
+				"bPaginate": false,
+				"destroy" : true,
+        "fnAdjustColumnSizing":false,
+				"data": result.resultArray,
+        "columns": 
+				[
+					{"data": "loanID"},
+          {"data": "pfirstName"},
+					{"data": "sfirstName"},					
+					{"data": "loanAmount"},
+					{"data": "loantenure"},
+					{"data": "schoolName"},
+					{"data": "sentLender"},
+					
+				],
+				columnDefs: 
+				[
+				 	{targets: 0,visible: true ,sorting:false,className : "uk-text-center",
+				  	render: function ( data, type, row, meta ) {
+              return '<input type="checkbox" name="customerArray2" class="customerCheckbox2 bz'+ row.loanID + '" value="'+ row.loanID + '" style="width:15px;height:15px;text-align:center;">'
+          }},           
+					{targets: [1],visible: true,sorting:false,className : "uk-text-center",
+					  render: function ( data, type, row, meta ) {
+						return row.pfirstName+" "+row.plastName
 					}},
+          {targets: [2],visible: true,sorting:false,className : "uk-text-center",
+					  render: function ( data, type, row, meta ) {
+						return row.sfirstName+" "+row.slastName
+					}},
+          {targets: [3],visible: true},
+          {targets: [4],visible: true},
+          {targets: [5],visible: true},
+          {targets: [6],visible: true,className : "text-center",
+				  	render: function ( data, type, row, meta ) {
+					  if(row.sentLender == 1 ) {
+							return 'Sent for Lender';
+						}else if(row.sentLender == 0){
+							return 'Pending';
+						}
+					}},
+				
 				]
 			});
       
@@ -487,17 +722,25 @@ function saveRow(frm){
 
 function updateApproveselStatus(){
   var approveRejectStatus = $('input[name="isApproved"]:checked').val();
+  var sendforlenderStatus = $('input[name="sendforlender"]:checked').val();
+  if(sendforlenderStatus === undefined){
+    sendforlenderStatus = 0;
+  }
   var customerArray = [];
   $.each($("input[name='customerArray']:checked"), function(){
           customerArray.push($(this).val());
   });
-  $.post(serviceUrl+'updateapproveStatus',{"loanIDArray":customerArray,'approveRejectStatus':approveRejectStatus}, function (data){
+  $.each($("input[name='customerArray2']:checked"), function(){
+          customerArray.push($(this).val());
+  });
+  $.post(serviceUrl+'updateapproveStatus',{"loanIDArray":customerArray,'approveRejectStatus':approveRejectStatus,'sendforlenderStatus':sendforlenderStatus}, function (data){
 		result = JSON.parse(data);
     console.log(result);
 		if (result["Status"] == "true"){
       swal(result["Message"],{icon: "success",closeOnClickOutside: false});
       //listrow();
       $('.btnCancel2').trigger('click');
+      $('.btnCancel3').trigger('click');
       location.reload();
 		}else{
 			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
