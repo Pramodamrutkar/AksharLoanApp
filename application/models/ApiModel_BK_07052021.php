@@ -298,9 +298,7 @@ class ApiModel extends CI_Model{
 				}else{
 					$postArray = $this->input->post();
 					$studentID = $postArray['studentID'];
-					
-					
-					/*$checkExistEntrysql = "SELECT loanID FROM loandetails where studentID=$studentID AND transactionDetails=''";
+					$checkExistEntrysql = "SELECT loanID FROM loandetails where studentID=$studentID AND transactionDetails=''";
 					$checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 					$checkExistEntryResult = $checkExistEntryQuery->result_array();	
 					if(!empty($checkExistEntryResult)){
@@ -310,14 +308,7 @@ class ApiModel extends CI_Model{
 							$this->db->delete('emischedule', array('loanID' => $loanID)); 
 							$this->db->delete('loandetails', array('loanID' => $loanID)); 
 						}
-					}*/
-					
-					$checkExistEntrysql = "					DELETE loandetails, emischedule
-FROM    loandetails
-INNER JOIN emischedule    
-ON loandetails.loanID=emischedule.loanID
-WHERE loandetails.studentID=".$studentID." AND loandetails.paymentStatus IS null AND loandetails.transactionDetails is null";
-$checkExistEntryQuery = $this->db->query($checkExistEntrysql);					
+					}
 					
 					if(isset($postArray["isKyc"]) && $postArray["isKyc"] == 1){
 						$sql = "SELECT * FROM loandetails where isApproved=1 AND studentID=$studentID";
@@ -1873,60 +1864,6 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 			return json_encode(array("status" => $Status,"message" => $Message));	
 		}
 	}
-	
-	public function cronToupdateEmioverdues()
-	{
-		$currentDate = date('Y-m-d');
-		$sql = "SELECT e.*,ld.loanStatus FROM emischedule as e INNER JOIN loandetails as ld on ld.loanID=e.loanID WHERE ld.loanStatus=0 and e.ispaid <> 1 and e.emiStatus NOT IN (1,2)";		
-		$query = $this->db->query($sql);
-		$result = $query->result_array();
-		//echo "<pre>"; print_r($result);die;
-		$noOfDays = 0;
-		foreach($result as $row){
-			if(strtotime($currentDate) > strtotime($row['emiDuedate']) && $row['noofdays'] < 30){
-				$noOfDays = $row['noofdays'] + 1;
-				$postData = array(
-					"noofdays" => $noOfDays,
-					"updated"=>date('Y-m-d H:i:s')
-				);
-				$this->db->update("emischedule",$postData,array("emiID"=>$row['emiID']));
-				$this->db->trans_complete();
-				if($this->db->trans_status() === FALSE){
-					$Status='false';
-					$Message='Error.';
-				}else{
-					$Status='true';
-					$Message= $row['noofdays']." No of day updated for EmiID=".$row['emiID']." and loanID=".$row['loanID']."";
-				}
-			}else if($row['noofdays'] >= 30){
-				//code to declare emi overdue
-				$postData = array(
-					"emiStatus" => 2, 
-					"updated"=> date('Y-m-d H:i:s')
-				);
-				$this->db->update("emischedule",$postData,array("emiID"=>$row['emiID']));
-				$this->db->trans_complete();
-				//loandetails forcefully closed i.e 3 in loandetails
-				$postData2 = array(
-					"loanStatus" => 3, 
-					"updated"=> date('Y-m-d H:i:s')
-				);
-				$this->db->update("loandetails",$postData2,array("loanID"=>$row['loanID']));
-				$this->db->trans_complete();
-				if($this->db->trans_status() === FALSE){
-					$Status='false';
-					$Message='Error.';
-				}else{
-					$Status='true';
-					$Message= "Loan closed forcefully for loanID=".$row['loanID']."";
-				}
-				
-			}else{
-				$Status='true';
-				$Message= "No EMI Found";
-			}
-		}
-		return json_encode(array("status" => $Status,"message" => $Message));	
-	}
+
 }
 ?>
