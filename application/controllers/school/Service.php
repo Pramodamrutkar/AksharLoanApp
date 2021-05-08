@@ -433,7 +433,7 @@ class Service extends CI_Controller {
 		$data = $this->ServiceModel->getStudentReportData();
 		$this->load->view('school/studentReport', array('data'=>$data));
 	}
-	//student Report
+	//staff Report
 	public function staffReport(){
 		$data = $this->ServiceModel->getStaffReportData();
 		$this->load->view('school/staffReport', array('data'=>$data));
@@ -450,7 +450,7 @@ class Service extends CI_Controller {
 	}
 	public function closedloanreport()
 	{	
-		$data = $this->ServiceModel->getLoanReport($loanType=1);
+		$data = $this->ServiceModel->getLoanReport($loanType=2);
 		$this->load->view('school/closedloanreport',array('data'=>$data));
 	}
 	public function staffloanreport()

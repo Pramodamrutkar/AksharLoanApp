@@ -46,11 +46,12 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                     foreach($data as $row){
                                  ?>
                                     <tr>
-                                        <td><?php echo $row['studentName']?></td>
-                                        <td><?php echo $row['overDueAmount']; ?></td>
-                                        <td><?php echo $row['amountnotDue']; ?></td>
-                                        <td><?php echo $row['penalty']; ?></td>
-                                        <td><?php echo ($row['penalty']+ $row['overDueAmount'] + $row['amountnotDue']); ?></td>
+                                        <td><?php echo $row['sfirstName']." ".$row['slastName']; ?></td>
+                                        <td><?php echo $row['emiAmount']; ?></td>
+                                        <td><?php echo $row['amountNotoverdue']; ?></td>
+                                        <td><?php echo round($row['noofdays'] * $row['perdaycharges']); ?></td>
+                                        <td><?php $penalty = $row['noofdays'] * $row['perdaycharges'];
+                                        echo round($penalty+ $row['emiAmount'] + $row['amountNotoverdue']); ?></td>
                                     </tr>
                                 <?php  } ?>
                                 </tbody>

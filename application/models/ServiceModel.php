@@ -1237,7 +1237,7 @@ class ServiceModel extends CI_Model{
 	
 
 
-	//Reports
+	//school Reports
 	public function getStudentReportData()
 	{
 		$schoolID = $this->session->userdata('schoolData')["schoolID"];
@@ -1283,7 +1283,18 @@ class ServiceModel extends CI_Model{
 	public function getLoanReport($loanType)
 	{
 		$schoolID = $this->session->userdata('schoolData')["schoolID"];
-		$sqlLoan = "SELECT sm.*,ld.created as loanDate,ld.*,p.* FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID WHERE loanStatus=$loanType AND sm.schoolID=$schoolID";
+		if($loanType == 0){
+			$select = '';
+			$innerjoin = "";
+			$where = "ld.loanStatus IN (0,1)";
+			$where2 = "";
+		}else{
+			$select = ',e.emiStatus,e.noofdays,e.perdaycharges';
+			$innerjoin = "LEFT JOIN emischedule as e ON e.loanID=ld.loanID";
+			$where = "ld.loanStatus IN(2,3)";
+			$where2 = "AND e.emiStatus=2";
+		}
+		$sqlLoan = "SELECT sm.*,ld.created as loanDate,ld.*,p.* $select FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID $innerjoin WHERE ld.loanType=0 AND sm.schoolID=$schoolID $where2 AND $where";
 		$queryLoan = $this->db->query($sqlLoan);
 		$resultArray = $queryLoan->result_array();		
 								
@@ -1293,28 +1304,23 @@ class ServiceModel extends CI_Model{
 	{
 		$resultArray = array();
 		$resultEmis = array();
-		
 		$sqlemi = "SELECT * FROM `emischedule` where emiStatus = 1";
 		$queryemi = $this->db->query($sqlemi);
-		$result = $queryemi->result_array();	
-		
+		$result = $queryemi->result_array();
 		foreach($result as $val){
 			$loanID = $val['loanID'];
-			$sqlemi2 = "SELECT * FROM `emischedule` emi INNER JOIN studentmaster sm on sm.studentID=emi.studentID WHERE emi.loanID=$loanID";
+			$sqlemi2 = "SELECT * FROM `emischedule` emi INNER JOIN studentmaster sm on sm.studentID=emi.studentID WHERE emi.loanID=$loanID and emi.emiStatus=2";
 			$queryemi2 = $this->db->query($sqlemi2);
-			$resultEmis[] = $queryemi2->result_array();	
-		}
-		foreach ($resultEmis as $value) {
-			foreach($value as $k => $v){
-				if($v['emiStatus'] == 2){
-					$resultArray[$v['studentID']]['studentName'] = $v['sfirstName']." ".$v['slastName'];
-					$resultArray[$v['studentID']]['overDueAmount'] = $v['emiAmount'];
-					$resultArray[$v['studentID']]['penalty'] = $v['noofdays'] * $v['perdaycharges'];
-				}else if($v['emiStatus'] == 0){
-					$resultArray[$v['studentID']]['amountnotDue'] = $v['emiAmount']; //pending
-				}
+			$resultEmidetails = $queryemi2->row_array();	
+			if(!empty($resultEmidetails)){
+				$sqlemi3 = "SELECT SUM(emi.emiAmount) as amountNotoverdue FROM `emischedule` emi WHERE emi.loanID=$loanID and emi.emiStatus NOT IN(1,2)";
+				$queryemi3 = $this->db->query($sqlemi3);
+				$resultnotOverdue = $queryemi3->row_array();
+				$resultEmidetails['amountNotoverdue'] = $resultnotOverdue['amountNotoverdue'];	
+				$resultArray[] = $resultEmidetails;			
 			}
 		}
+
 		return $resultArray;
 	}
 
@@ -1354,14 +1360,15 @@ class ServiceModel extends CI_Model{
 		return $query->result_array();
 	}
 
-/* 	public function loanAllschool(){
+	/* 
+	public function loanAllschool(){
 		$sql = "SELECT count(ld.loanID),scm.schoolName,scm.schoolID,lm.lenderName FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.isApproved IN (0) and ld.loanType=0 and ld.isKyc <> 2 GROUP BY scm.schoolID";
 		$query = $this->db->query($sql);
 		$sqlOneResult = $query->result_array();
 		$sql2 = "SELECT count(ld.loanID) as lenderCount, scm.schoolName,scm.schoolID,lm.lenderName, scm.schoolID FROM `loandetails` as ld INNER JOIN `studentmaster` as sm on sm.studentID=ld.studentID INNER JOIN schoolmaster as scm on scm.schoolID=sm.schoolID INNER JOIN lendermaster as lm on scm.lenderID=lm.lenderID WHERE ld.isApproved = 5 and ld.loanType=0";
 		$query2 = $this->db->query($sql2);
 		$sqltwoResult = $query2->result_array();
-	//	print_r($sqlOneResult); print_r($sqltwoResult); die;
+		print_r($sqlOneResult); print_r($sqltwoResult); die;
 		$result = array();
 		foreach($sqlOneResult as $k => $v){
 			foreach($sqltwoResult as $k1 => $v1){
@@ -1378,7 +1385,9 @@ class ServiceModel extends CI_Model{
 		}
 		return $result;
 
-	} */
+	}
+	*/
+
 	public function loanAllschool(){
 		$resultArray = array();
 		$sql1 = "SELECT schoolmaster.schoolID,schoolmaster.schoolName,lendermaster.lenderName,loandetails.* FROM loandetails INNER JOIN studentmaster on loandetails.studentID=studentmaster.studentID INNER JOIN schoolmaster on studentmaster.schoolID=schoolmaster.schoolID INNER JOIN lendermaster on loandetails.lenderID=lendermaster.lenderID WHERE loandetails.loanType=0 GROUP BY schoolmaster.schoolID,loandetails.lenderID ORDER BY schoolmaster.schoolName";

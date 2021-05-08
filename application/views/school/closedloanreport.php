@@ -55,7 +55,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                         <td><?php echo ($row['loanDate'] == NULL ? "-" : date('Y-m-d',strtotime($row['loanDate']))); ?></td>
                                         <td><?php echo $row['emiAmount']; ?></td>
                                         <td><?php echo $row['emiAmount']; ?></td>
-                                        <td><?php echo $row['emiAmount']; ?></td>
+                                        <td><?php echo $row['noofdays']; ?></td>
                                         <td><?php echo $row['pfirstName']." ".$row['plastName']; ?></td>
                                         <td><?php echo $row['mobileNo']; ?></td>
                                     </tr>

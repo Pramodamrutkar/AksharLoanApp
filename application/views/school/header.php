@@ -327,3 +327,13 @@ if(empty($this->session->userdata('schoolData')["schoolID"])){
 	redirect('/');
 }
 ?>
+<style>
+  button.dt-button.buttons-excel.buttons-html5{
+  position: relative !important;
+  top: 45px !important;
+  -webkit-appearance: auto;
+    font-size: 15px;
+    padding: 5px 10px;
+    margin:0px 25px;
+}
+</style>
