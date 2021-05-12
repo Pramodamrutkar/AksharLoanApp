@@ -83,6 +83,19 @@ class Service extends CI_Controller {
 			}						
 		}echo json_encode(array("Status" => $Status,"Message" => $Message));
 	}
+
+	public function postschoolFees(){
+		$result = $this->ServiceModel->saveSchoolFees();			
+		if(!$result){
+			$Status='false';
+			$Message = "Something went wrong. Please try Again.";
+		}else{
+			$Status='true';
+			$Message = "Record Save Successfull.";
+		}
+		echo json_encode(array("Status" => $Status,"Message" => $Message));
+	}
+
 	public function deletestudent()
 	{
 		$postArray = $this->input->post();
@@ -443,6 +456,13 @@ class Service extends CI_Controller {
 		$data = $this->ServiceModel->getFeesReportData();
 		$this->load->view('school/feesReport',array('data'=>$data));
 	}
+
+	public function subFeesReport($studentID){
+		$data = $this->ServiceModel->getpaidFeesSubreport($studentID);
+		$this->load->view('school/subfeesReport',array('data'=>$data));
+	}
+
+	
 	public function loanreport()
 	{	
 		$data = $this->ServiceModel->getLoanReport($loanType=0);
@@ -472,6 +492,22 @@ class Service extends CI_Controller {
 	{
 		$paymentData = $this->ServiceModel->getPaymentsubReportData($paymentID);
 		$this->load->view('school/paymentsubreport', array('paymentData'=>$paymentData));
+	}
+	public function directschoolPayment(){
+		$postArray = $this->input->post();
+		if(!empty($postArray)){
+			$result  = $this->ServiceModel->postReason($postArray);
+			if(!$result){
+				$Status='false';
+				$Message = "Something went wrong. Please try Again.";
+			}else{
+				$Status='true';
+				$Message = "Fees Added Successfully.";
+			}
+		}else{
+			$Status='false';
+			$Message = "Something went wrong. Please try Again.";
+		}echo json_encode(array("status" => $Status,"message" => $Message));
 	}
 	
 }

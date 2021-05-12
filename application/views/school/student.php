@@ -7,6 +7,12 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
 <html>
 <head>
 <?php include('include.php');?>
+<style>
+#breadcrumbs-wrapper{
+	padding:0px;
+}
+</style>
+
 </head>
 <body>
 <?php include('header.php');?>
@@ -42,8 +48,9 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                         <th>Parent Name</th>
                         <th>Phone No</th>
                         <th>Gender</th>
-						<th>Approved</th>
-                        <th style="width:60px;">Status</th>
+						<!-- <th>Approved</th>
+                        <th>Status</th> -->
+						<th>Current Outstanding Fees</th>
                         <th style="width:60px;">Actions</th>
                       </tr>
                     </thead>
@@ -73,7 +80,23 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
             <label for="slastName"><span class="req">*</span>Student Last Name</label>
           </div>
         </div>
-        <div class="col s6">
+
+		<div class="col s6">
+          <div class="input-field">
+            <input type="text" id="amount" name="amount" autocomplete="off">
+            <label for="slastName"><span class="req">*</span>School Fees Amount</label>
+          </div>
+        </div>
+
+		<div class="col s6">
+          <div class="input-field">
+            <input type="date" id="paymentDate" name="paymentDate">
+            <label for="paymentDate"><span class="req">*</span>Fees Date</label>
+          </div>
+        </div>
+
+
+        <!-- <div class="col s6">
           <div class="input-field">
             <input type="text" id="pfirstName" name="pfirstName">
             <label for="pfirstName">Parent First Name</label>
@@ -148,7 +171,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
               <input type="radio" name="isActive" id="isActive2" class="with-gap" value="0"/>
               <span>No</span></label>
           </p>
-        </div>
+        </div> -->
     
     <!--     <div class="col s4">
           <p><span class="req">*</span> Approved</p>
@@ -191,6 +214,18 @@ $(document).ready(function(){
 		getRow(studentID);
 		$('#ModalBox').modal('open');
 	});	
+
+	$('#tableData').on('click', 'a.btnPayment', function (e){	
+		resetForm();
+		var table = $('#tableData').DataTable();
+		var rows = table.row($(this).closest('tr')).data();
+		var studentID = rows["studentID"];
+		getRow(studentID);
+		$('#ModalBox').modal('open');
+	});	
+
+	
+	
 	$('#tableData').on('click', 'a.btnDelete', function (e){
 		var table = $('#tableData').DataTable();
 		var rows = table.row($(this).closest('tr')).data();
@@ -246,7 +281,7 @@ function listRow(){
 		if (result["Status"] == "true"){		
 			$('#tableData').DataTable({
    			    "searching": true,
-				"bPaginate": false,
+				"bPaginate": true,
 				"destroy" : true,
 				"data": result.resultArray,
 				"columns": 
@@ -256,8 +291,9 @@ function listRow(){
 					{"data": "parentName"},					
 					{"data": "mobileNo"},
 					{"data": "gender"},
-					{"data": "isApproved"},
-					{"data": "isActive"},
+					{"data": "currentPayableFees"},
+					//{"data": "isApproved"},
+					//{"data": "isActive"},
 					{"data": "Action"},
 				],
 				columnDefs: 
@@ -273,7 +309,8 @@ function listRow(){
 					}},
 					{targets:[3],visible: true},
 					{targets:[4],visible: true},
-					{targets:[5],visible: true,className : "text-center",
+					{targets:[5],visible: true},
+					/* {targets:[5],visible: true,className : "text-center",
 					render: function ( data, type, row, meta ) {
 						if(data == 1 ) {
 							return 'Yes';
@@ -288,10 +325,11 @@ function listRow(){
 						}else {
 							return 'Inactive';
 						}
-					}},
-					{targets:[7],visible: true ,className : "text-center",sorting:false,
+					}}, */
+					{targets:[6],visible: true ,className : "text-center",sorting:false,
 					render: function ( data, type, row, meta ) {
-						return '<a href="javascript:void(0);" class=\"btnEdit material-icons\">edit</a><a href="javascript:void(0);" class=\"btnDelete material-icons\">delete</a>'
+						return '<a href="javascript:void(0);"  class=\"myBtn btnPayment material-icons\">payment</a>';
+						//return '<a href="javascript:void(0);" class=\"btnEdit material-icons\">edit</a><a href="javascript:void(0);" class=\"btnDelete material-icons\">delete</a>'
 					}},
 				]
 			});
@@ -307,7 +345,7 @@ function listRow(){
 	}});
 }
 function saveRow(frm){
-	$(frm).ajaxSubmit({url:serviceUrl+'poststudent',beforeSubmit: function (formData, jqForm, options){
+	$(frm).ajaxSubmit({url:serviceUrl+'postschoolFees',beforeSubmit: function (formData, jqForm, options){
 		var queryString = $.param(formData);
 	},clearForm: false,resetForm: false,success: function (responseText, statusText, xhr, $form){
 		var result = JSON.parse(responseText);
@@ -321,6 +359,20 @@ function saveRow(frm){
 			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
 		}		
 	}});
+	/* $(frm).ajaxSubmit({url:serviceUrl+'poststudent',beforeSubmit: function (formData, jqForm, options){
+		var queryString = $.param(formData);
+	},clearForm: false,resetForm: false,success: function (responseText, statusText, xhr, $form){
+		var result = JSON.parse(responseText);
+		if (result["Status"] == "true"){	
+			swal({text: result["Message"],icon: 'success',closeOnClickOutside: false,buttons: {delete: 'Ok'}}).then(function (willDelete){
+				if(willDelete){
+					listRow();
+				}
+			});
+		}else{
+			swal(result["Message"],{icon: "error",closeOnClickOutside: false});
+		}		
+	}}); */
 }
 function deleteRow(studentID){
 	$.post(serviceUrl+'deletestudent',{"studentID": studentID}, function (data){

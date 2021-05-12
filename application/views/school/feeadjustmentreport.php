@@ -1,4 +1,4 @@
-<?php $pageTitle = 'Fee Adjustment Report';
+<?php $pageTitle = 'Fee Adjustment Report';//margin report.
 
 $schoolID = $this->session->userdata('schoolData')["schoolID"];
 $schoolName = $this->session->userdata('schoolData')["schoolName"];

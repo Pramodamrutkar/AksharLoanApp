@@ -3,11 +3,13 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Service extends CI_Controller {
 
-    function __construct()
+	function __construct()
     {
         parent::__construct();
 		$this->load->model('ServiceModel');
+		
     }			
+
 	public function index()
 	{
 		$this->load->view('index');
@@ -990,6 +992,12 @@ class Service extends CI_Controller {
 			$Message = "Something went wrong. Please try Again.";
 		}echo json_encode(array("Status" => $Status,"Message" => $Message));
 	}
+
+	public function convertHtmltopdf(){
+		
+		$this->ServiceModel->generateAgreement();
+	}
+
 	
 	public function logout(){
 		$this->session->sess_destroy();

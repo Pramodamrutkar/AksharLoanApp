@@ -35,13 +35,14 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                 <tr style="font-size:14px;">
                                     
                                     <th>Name</th>
-                                    <th width="50">Outstanding Fees</th>
+                                    <th width="50">Opening Fees Outstanding</th>
                                     <th>Class</th>
-                                    <th>Payment Date</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
+                                    <!-- <th>Payment Date</th> -->
+                                    <th width="100">Fee paid during the month</th>
+                                    <!-- <th>Status</th> -->
                                     <th>Parent Name</th>
                                     <th>Mobile Number</th>
+                                    <th width="50">Closing Fees Outstanding</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -50,13 +51,15 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                  ?>
                                     <tr>
                                         <td><?php echo $row['sfirstName']." ".$row['slastName']; ?></td>
-                                        <td><?php echo $row['currentPayableFees']; ?></td>
+                                        <td><?php echo round($row['currentPayableFees'] + $row['LoanAmount'] + $row['DirectAmount']); ?></td>
                                         <td><?php echo $row['section']."".$row['standard']; ?></td>
-                                        <td><?php echo ($row['loanDate'] == NULL ? "-" : date('Y-m-d',strtotime($row['loanDate']))); ?></td>
-                                        <td><?php echo ($row['loanAmount'] > 0 ? $row['loanAmount'] : 0); ?></td>
-                                        <td><?php if($row['loanType'] == NULL){ echo "<span style='color:red'>Not Paid<span>"; }else if($row['loanType'] == 1){ echo "Remmittance"; }else if($row['loanType'] == 0){ echo "Loan"; }   ?></td>
+                                        <!-- <td><?php //echo ($row['loanDate'] == NULL ? "-" : date('Y-m-d',strtotime($row['loanDate']))); ?></td> -->
+                                        <td><a href="<?php echo base_url()."school/service/subfeesReport/".$row['studentID'] ?>" target="_blank"><?php echo round($row['LoanAmount'] + $row['DirectAmount']); ?></a>                                        
+                                        </td>
+                                        <!-- <td><?php //if($row['loanType'] == NULL){ echo "<span style='color:red'>Not Paid<span>"; }else if($row['loanType'] == 1){ echo "Remmittance"; }else if($row['loanType'] == 0){ echo "Loan"; }   ?></td> -->
                                         <td><?php echo $row['pfirstName']." ".$row['plastName']; ?></td>
                                         <td><?php echo $row['mobileNo']; ?></td>
+                                        <td><?php echo $row['currentPayableFees']; ?></td>
                                     </tr>
                                 <?php  } ?>
                                 </tbody>

@@ -381,6 +381,7 @@ class ServiceModel extends CI_Model{
 			return false;
 		}
 	}
+	
 	public function UpdateStudent(){
 		$postArray = $this->input->post();
 		$postData = array(
@@ -428,6 +429,41 @@ class ServiceModel extends CI_Model{
 			return true;
 		}
 	}		
+	//Added on 11/05/2021
+	public function saveSchoolFees()
+	{
+		$postArray = $this->input->post();
+		$postData = array(
+			"studentID" => $postArray['studentID'],
+			"schoolID" => $postArray['schoolID'],
+			"amount" => $postArray['amount'],
+			"paymentDate" => $postArray['paymentDate'],
+			"created" => date('Y-m-d H:i:s')
+		);
+		$this->db->insert("schoolstudentpayment",$postData);
+		$studenID = $this->db->insert_id();
+		if($this->db->affected_rows() > 0){			
+			$studentID = $postArray['studentID'];
+			$sql   = "SELECT * FROM studentmaster WHERE studentID=$studentID";
+			$query = $this->db->query($sql);
+			$studentMasterData = $query->row_array();
+			$currentpayableFees = $studentMasterData['currentPayableFees'] - $postArray['amount'];
+			$postData = array(
+				"currentPayableFees"=>$currentpayableFees,
+				"updated"=> date('Y-m-d H:i:s')
+			);
+			$this->db->update("studentmaster",$postData,array("studentID"=>$studentID));		
+			$this->db->trans_complete();
+			if($this->db->trans_status() === FALSE){
+				return false;
+			}else{
+				return true;
+			}
+			
+		}else{
+			return false;
+		}	
+	}	
 
 	//schoolPayment
 	public function ListSchoolPayment($schoolID)
@@ -1273,11 +1309,34 @@ class ServiceModel extends CI_Model{
 	}
 
 	public function getFeesReportData(){
+		$result = array();
 		$schoolID = $this->session->userdata('schoolData')["schoolID"];
-		$sqlFees = "SELECT sm.*,ld.created as loanDate,ld.*,p.* FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID WHERE sm.schoolID=$schoolID";
+		$sqlFees = "SELECT sum(ld.loanAmount) as LoanAmount, sm.*,ld.created as loanDate,ld.*,p.*,sm.studentID FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID WHERE sm.schoolID= $schoolID GROUP BY sm.studentID";
 		$queryFees = $this->db->query($sqlFees);
-		$resultArray = $queryFees->result_array();	
+		$result = $queryFees->result_array();	
+		foreach($result as $row){
+			$studentID = $row['studentID'];
+			$sql = "SELECT sum(amount) as amount, studentID FROM `schoolstudentpayment` WHERE studentID='".$studentID."' GROUP BY studentID";
+			$queryDirectPayment = $this->db->query($sql);
+			$resultData = $queryDirectPayment->row_array();	
+			//if(!empty($resultData['amount'])){
+			$row['DirectAmount'] = $resultData['amount']; 	
+			$resultArray[] = $row;
+		}
 		return $resultArray;
+	}
+
+	public function getpaidFeesSubreport($studentID){
+		
+		$sqlFees1 = "SELECT paymentDate, '2' as loanType, amount as loanAmount FROM `schoolstudentpayment` WHERE studentID= $studentID";
+		$queryFees1 = $this->db->query($sqlFees1);
+		$schoolstudentpaymentData = $queryFees1->result_array();	
+		
+		$sqlFees2 = "SELECT created as paymentDate, loanType, loanAmount FROM `loandetails` WHERE studentID= $studentID";
+		$queryFees2 = $this->db->query($sqlFees2);
+		$loandetailsData = $queryFees2->result_array();	
+		$data = array_merge($loandetailsData,$schoolstudentpaymentData);
+		return $data;
 	}
 
 	public function getLoanReport($loanType)
@@ -1672,6 +1731,7 @@ class ServiceModel extends CI_Model{
 			return true;
 		}
 	}
+
 	public function checkFilemonthly($schoolID)
 	{
 		$month = date('m');
@@ -1686,5 +1746,74 @@ class ServiceModel extends CI_Model{
 			return false;
 		}
 	}
+
+	public function generateAgreement()
+	{
+		$this->load->library('Pdf');
+		//$studentID = $this->security->xss_clean($postArray["studentID"]);
+		$studentID = 1;
+		$sql = "SELECT s.*, ld.*, p.*, sf.collectionCharges FROM studentmaster as s INNER JOIN parentmaster p on p.parentID=s.parentID INNER JOIN loandetails as ld on s.studentID=ld.studentID INNER JOIN schoolfinance as sf on sf.schoolID=s.schoolID WHERE s.`studentID`=?";
+		$query = $this->db->query($sql,array($studentID));
+		$studentData = $query->row_array();
+		$agreementSql = "SELECT * FROM agreement WHERE agreementType=2";
+		$agreementQuery = $this->db->query($agreementSql);
+		$agreement = $agreementQuery->row_array();
+		$loanID = $studentData['loanID'];
+		$emiSql = "SELECT emiID,emiDuedate,emiAmount FROM emischedule WHERE ispaid=0 AND loanID=$loanID";
+		$emiQuery = $this->db->query($emiSql);
+		$emiData = $emiQuery->result_array();
+		
+		$agreementContents = $agreement['agreementText'];
+
+		$agreementData = str_replace('<input type="text" name="DateNumber">',date("jS"),$agreementContents);
+		$agreementData = str_replace('<input type="text" name="MonthName">',date("F"),$agreementData);
+		$agreementData = str_replace('<input type="text" name="YearNumber">',date("Y"),$agreementData);
+		$agreementData = str_replace('<input type="text" name="ParentName">',$studentData['pfirstName']." ".$studentData["plastName"],$agreementData);
+		$agreementData = str_replace('<input type="text" name="PanNumber">',$studentData['panId'],$agreementData);
+		$agreementData = str_replace('<input type="text" name="ParentFatherName">', $studentData['pmiddleName']." ".$studentData["plastName"], $agreementData);
+		$agreementData = str_replace('<input type="text" name="AddressLocationCityDistrict">', $studentData['address'].", ".$studentData['location'].", ".$studentData['city'].", ".$studentData['state'] ,$agreementData);
+		$agreementData = str_replace("[LoanAmount]",$studentData['loanAmount'],$agreementData);
+		$agreementData = str_replace("[EmiNumber]",$studentData['loantenure'],$agreementData);
+		$agreementData = str_replace("[RateOfInterest]",$studentData['roi'],$agreementData);
+		$agreementData = str_replace("[ParentNameBehalf]",$studentData['pfirstName']." ".$studentData["plastName"],$agreementData);
+		$agreementData = str_replace("[TenureMonthly]",$studentData['loantenure'],$agreementData);
+		$agreementData = str_replace("[EmiAmount]",$studentData['emiAmount'],$agreementData);
+		$agreementData = str_replace("[BorrowerName]",$studentData['pfirstName']." ".$studentData["plastName"],$agreementData);
+		$agreementData = str_replace('<input type="text" name="LoanAmount">',$studentData['loanAmount'],$agreementData);
+		$agreementData = str_replace('<input type="text" name="RateOfInterest">',$studentData['roi'],$agreementData);
+		$agreementData = str_replace('<input type="text" name="CollectionCharge">',$studentData['collectionCharges'],$agreementData);
+		$agreementData = str_replace('<input type="text" name="Tenure">',$studentData['loantenure'],$agreementData);
+		$agreementData = str_replace('<input type="text" name="EMIAmount">',$studentData['emiAmount'],$agreementData);
+		$str = '';
+		if(!empty($emiData)){
+			$i= 1;
+			foreach($emiData as $row){
+				$emiAmount = $row['emiAmount'];
+				$emiDueDate = date("Y-m-d",strtotime($row['emiDuedate']));
+				$str .= "<tr><td>".$this->addOrdinalNumberSuffix($i)."</td><td>".$emiAmount."</td><td>".$emiDueDate."</td></tr>";
+				$i++;
+			}
+		}
+		$agreementData = str_replace('<tr><td>Loan Amount</td><td><input type="text"></td><td><input type="text"></td></tr>',$str,$agreementData);
+		
+		$html = $agreementData;
+		$this->pdf->loadHtml($html);
+		$this->pdf->setPaper('A4', 'portrait'); 
+		$this->pdf->render(); 
+		$this->pdf->stream();
+	}
+
+	function addOrdinalNumberSuffix($num) {
+		if (!in_array(($num % 100),array(11,12,13))){
+		  switch ($num % 10) {
+			case 1:  return $num.'st';
+			case 2:  return $num.'nd';
+			case 3:  return $num.'rd';
+		  }
+		}
+		return $num.'th';
+	}
+
+	
 
 }?>
