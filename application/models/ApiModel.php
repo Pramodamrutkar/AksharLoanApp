@@ -107,7 +107,7 @@ class ApiModel extends CI_Model{
 			$postArray = $this->input->post();
 			$mobileNO = $this->security->xss_clean($postArray["mobileNo"]);
 			$otp = $this->security->xss_clean($postArray["otp"]);
-			$sql= "SELECT concat(s.sfirstName,' ',s.slastName) as userName,p.accessToken,p.otp, p.mobileNo FROM `studentmaster` as s INNER JOIN `parentmaster` as p ON p.parentID = s.parentID WHERE mobileNo=? AND otp=?";
+			$sql= "SELECT concat(s.sfirstName,' ',s.slastName) as studentName,concat(p.pfirstName,' ',p.plastName) as parentName, p.accessToken,p.otp, p.mobileNo FROM `studentmaster` as s INNER JOIN `parentmaster` as p ON p.parentID = s.parentID WHERE mobileNo=? AND otp=?";
 			$query=$this->db->query($sql,array($mobileNO,$otp));
 			$ResultArray = array();
 			if($query->num_rows() > 0) {
