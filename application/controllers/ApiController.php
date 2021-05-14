@@ -37,10 +37,10 @@ class ApiController extends CI_Controller{
             echo $this->ApiModel->loanAgreement();
         }
         
-        public function parentloandetails()
+/*         public function parentloandetails()
         {
             echo $this->ApiModel->saveLoanDetails();
-        }
+        } */
 
        /*  public function getKycDetails(){
             echo $this->ApiModel->fetchKycDetails();
@@ -85,6 +85,16 @@ class ApiController extends CI_Controller{
         
         public function checkemioverdues(){
             echo $this->ApiModel->cronToupdateEmioverdues();
+        }
+
+        public function repayment()
+        {
+            echo $this->ApiModel->repaymentList();
+        }
+
+        public function parentloandetails()
+        {
+            echo $this->ApiModel->getLoandetails();
         }
 
         //staff login

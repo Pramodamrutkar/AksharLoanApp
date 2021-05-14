@@ -23,9 +23,9 @@ class ApiModel extends CI_Model{
 				$UserData = $query->row_array();
 				$mobileNO = $UserData['mobileNo'];
 				if(!empty($mobileNO)){
-					/* $senderID = "AKSHARID";
-					$message = "Your OTP for Login is ";
-					$this->sendSMS($senderID, $UserData['mobileNo'], $message); */
+					//$senderID = "AKSFEE";
+					//$message = "Dear Parent, We are registered with your child's school to facilitate school fee payment. Login with the mobile number registered with school. Get details of the school fee payable and pay the fee or take a fee loan in minutes without going anywhere. Download Akshar fee mobile application from ##Field##";
+					//$this->sendSMS($senderID, $mobileNO, $message); 
 					$otp = substr($mobileNO,-4);
 					$postData['otp'] = $otp;
 					$postData['updated'] = date('Y-m-d H:i:s');
@@ -60,19 +60,35 @@ class ApiModel extends CI_Model{
 		// Request parameters array
 		$otp = mt_rand(10000, 99999);
 		$message = $message.''.$otp;
- 
-	   $fields = array(
-		  "sender_id" => $senderID,
-		  "message" => $message,
-		  "language" => "english",
-		  "route" => "p",
-		  "numbers" => $recipient_no,
+		
+		/* $response = "https://smpp.keepintouch.co.in/vendorsms/pushsms.aspx?user=AKSHARFEE&password=akshar1234&msisdn=$recipient_no&sid=$senderID&msg=$message&fl=0&gwid=2";
+		echo $response; die('here we go');
+		return $response; */
+
+	    $postData = array(
+		  "user" => 'AKSHARFEE',
+		  "password" => 'akshar1234',
+		  "sid" => $senderID,
+		  "msg" => $message,
+		  "fl" => 0,
+		  "gwid" => 2,
+		  "msisdn" => $recipient_no,
 		);
+	  	$curl = curl_init();	
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => 'https://smpp.keepintouch.co.in/vendorsms/pushsms.aspx',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $postData,
+			CURLOPT_FOLLOWLOCATION => true
+		));
+		$output = curl_exec($curl);
+		echo $output;
 
+	/*	
 	  $curl = curl_init();
-
-	  curl_setopt_array($curl, array(
-		CURLOPT_URL => "https://www.fast2sms.com/dev/bulk",
+		curl_setopt_array($curl, array(
+		CURLOPT_URL => "https://smpp.keepintouch.co.in/vendorsms/pushsms.aspx",
 		CURLOPT_RETURNTRANSFER => true,
 		CURLOPT_ENCODING => "",
 		CURLOPT_MAXREDIRS => 10,
@@ -84,7 +100,8 @@ class ApiModel extends CI_Model{
 		CURLOPT_POSTFIELDS => json_encode($fields),
 		CURLOPT_HTTPHEADER => array(
 		  "authorization: TGgXsvlFt97NkatPWxN7hUPPDOu4Bp0KkeLahNPFfSQEnsQ7Du5fMSZehAbi",
-		  "accept: */*",
+		  "accept: */ 
+	/*",
 		  "cache-control: no-cache",
 		  "content-type: application/json"
 		),
@@ -92,7 +109,7 @@ class ApiModel extends CI_Model{
 	  $response = curl_exec($curl);
 	  $err = curl_error($curl);
 	  curl_close($curl);
-	  return $response;
+	  return $response; */
  	}
 
 	public function verifyOtpdetails()
@@ -800,7 +817,7 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 		}
 	}
 	
-	public function saveLoanDetails()
+	/* public function saveLoanDetails()
 	{
 		$ResultArray = array();
 		$postArray = $this->input->post();
@@ -846,7 +863,7 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 		}else{
 			return json_encode(array("status" => $Status,"message" => $Message));	
 		}
-	}
+	} */
 
 	public function saveprocessingFeesStatus()
 	{
@@ -1125,6 +1142,77 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 		}
     }
 
+	public function repaymentList(){
+
+		$ResultArray = array();
+		$postArray = $this->input->post();
+		$UserData  = $this->VerifyStudentAccessToken($postArray["accessToken"]);
+		if($UserData == FALSE){
+			$Status='false';
+			$Message = "Invalid Access Token";
+		}else{
+		        $emiArray = array();
+				$sqlemi1 = "SELECT * FROM `studentmaster` as s INNER JOIN `parentmaster` p ON p.parentID = s.parentID WHERE accessToken=?";
+				$queryemi1 = $this->db->query($sqlemi1, array($postArray['accessToken']));
+				$result = $queryemi1->result_array();		
+
+				foreach($result as $k => $v){					
+					$sqlemi = "SELECT e.emiID, e.studentID, e.emiDuedate, e.emiAmount, CONCAT(s.sfirstName,' ',s.slastName) as studentName FROM `studentmaster` as s INNER JOIN emischedule as e on e.studentID= s.studentID WHERE e.emiStatus=0 AND e.studentID=".$v['studentID']." ORDER BY  e.emiDuedate ASC";
+					$queryemi = $this->db->query($sqlemi);
+					if($queryemi->num_rows() > 0 ) {
+						$emiRes = $queryemi->result_array();
+						foreach($emiRes as $emi){
+							$emiArray[] = $emi;
+						}			
+						$price = array();
+						$em = array();
+						
+						$price = array_column($emiArray, 'emiDuedate');
+						$em = array_multisort($price, SORT_ASC, $emiArray);
+						
+					}
+				}
+				$ResultArray = $emiArray;
+				if(!empty($ResultArray)){
+					$Status='true';
+					$Message="Data Found";
+				}else{
+					$Status='false';
+					$Message="No Pending EMI";
+				}
+		}
+		if(!empty($ResultArray)){
+			return json_encode(array("status" => $Status,"message" => $Message,"data"=>$ResultArray));
+		}else{
+			return json_encode(array("status" => $Status,"message" => $Message));	
+		}
+	}
+
+	public function getLoandetails(){
+		$ResultArray = array();
+		$postArray = $this->input->post();
+		$UserData  = $this->VerifyStudentAccessToken($postArray["accessToken"]);
+		if($UserData == FALSE){
+			$Status='false';
+			$Message = "Invalid Access Token";
+		}else{
+		       $sqlemi1 = "SELECT sm.studentID,CONCAT(sm.sfirstName,' ',sm.slastName) as studentName, sm.currentPayableFees as outstandingAmount,ld.created as loanDate,ld.loantenure as LoanTenure,ld.loanAmount,ld.emiAmount FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails as ld on ld.studentID=sm.studentID WHERE ld.loanType=0 AND p.`accessToken` = ? GROUP BY ld.studentID";
+				$queryemi1 = $this->db->query($sqlemi1, array($postArray['accessToken']));
+				$ResultArray = $queryemi1->result_array();		
+				if(!empty($ResultArray)){
+					$Status='true';
+					$Message="Data Found";
+				}else{
+					$Status='false';
+					$Message="No Pending EMI";
+				}
+		}
+		if(!empty($ResultArray)){
+			return json_encode(array("status" => $Status,"message" => $Message,"data"=>$ResultArray));
+		}else{
+			return json_encode(array("status" => $Status,"message" => $Message));	
+		}
+	}
 
 	//staff Login API start	
 	public function staffLoginMatchReturnOtp()
@@ -1928,5 +2016,8 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 		}
 		return json_encode(array("status" => $Status,"message" => $Message));	
 	}
+
+
+
 }
 ?>
