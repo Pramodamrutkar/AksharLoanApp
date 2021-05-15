@@ -83,9 +83,7 @@ class ApiController extends CI_Controller{
             echo $this->ApiModel->addPayfromownAccount();
         }
         
-        public function checkemioverdues(){
-            echo $this->ApiModel->cronToupdateEmioverdues();
-        }
+
 
         public function repayment()
         {
