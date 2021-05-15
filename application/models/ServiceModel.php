@@ -808,6 +808,10 @@ class ServiceModel extends CI_Model{
 							$parentArray = $queryParent->row_array();
 							if(empty($parentArray)){
 								$parentID = $this->saveParent(array($row['F'],$row['G'],$row['H'],$row['J'],$row['M']));
+								$senderID = "AKSFEE";
+								$mobileNO = $row['J'];
+								$message = "Dear Parent, We are registered with your child's school to facilitate school fee payment. Login with the mobile number registered with school. Get details of the school fee payable and pay the fee or take a fee loan in minutes without going anywhere. Download Akshar fee mobile application from ##Field##";
+								$this->sendSMS($senderID, $mobileNO, $message); 
 								$data['parentID']  = $parentID;
 								$data['sfirstName']  = $row['A'];
 								$data['slastName']  = $row['B'];
@@ -921,6 +925,32 @@ class ServiceModel extends CI_Model{
 		$parentID = $this->db->insert_id();
 		return $parentID;
 	}
+
+	public function sendSMS($senderID, $recipient_no, $message){
+		// Request parameters array
+		//$otp = mt_rand(10000, 99999);
+		//$message = $message.''.$otp;
+		
+	    $postData = array(
+		  "user" => 'AKSHARFEE',
+		  "password" => 'akshar1234',
+		  "sid" => $senderID,
+		  "msg" => $message,
+		  "fl" => 0,
+		  "gwid" => 2,
+		  "msisdn" => $recipient_no,
+		);
+	  	$curl = curl_init();	
+		curl_setopt_array($curl, array(
+			CURLOPT_URL => 'https://smpp.keepintouch.co.in/vendorsms/pushsms.aspx',
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST => true,
+			CURLOPT_POSTFIELDS => $postData,
+			CURLOPT_FOLLOWLOCATION => true
+		));
+		$output = curl_exec($curl);
+		return $output;
+ 	}
 
 	function checkpayableFeeschange($row){
 		$checkSQL = "SELECT * FROM studentmaster as sm INNER JOIN parentmaster as pm On pm.parentID=sm.parentID WHERE sm.sfirstName LIKE '%".strtolower($row[0])."%' AND sm.slastName LIKE '%".strtolower($row[1])."%' AND pm.mobileNo=".$row[2]."";
@@ -1302,7 +1332,7 @@ class ServiceModel extends CI_Model{
 		$query = $this->db->query($sql);
 		$schoolpaymentData = $query->row_array();	
 		$paymentDate = $schoolpaymentData["paymentDate"];
-		$sql2 = "SELECT * FROM `loandetails` as ld INNER JOIN studentmaster sm ON sm.studentID=ld.studentID where ld.created LIKE '%$paymentDate%' AND sm.schoolID=$schoolID";
+		$sql2 = "SELECT sm.*,ld.*,ld.created as loanDate FROM `loandetails` as ld INNER JOIN studentmaster sm ON sm.studentID=ld.studentID where ld.created LIKE '%$paymentDate%' AND sm.schoolID=$schoolID";
 		$query2 = $this->db->query($sql2);
 		$resultArray = $query2->result_array();	
 		return $resultArray;
@@ -1344,7 +1374,7 @@ class ServiceModel extends CI_Model{
 		$schoolID = $this->session->userdata('schoolData')["schoolID"];
 		if($loanType == 0){
 			$select = '';
-			$innerjoin = "";
+			$innerjoin = "LEFT JOIN emischedule as e ON e.loanID=ld.loanID";
 			$where = "ld.loanStatus IN (0,1)";
 			$where2 = "";
 		}else{
@@ -1353,11 +1383,12 @@ class ServiceModel extends CI_Model{
 			$where = "ld.loanStatus IN(2,3)";
 			$where2 = "AND e.emiStatus=2";
 		}
-		$sqlLoan = "SELECT sm.*,ld.created as loanDate,ld.*,p.* $select FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID $innerjoin WHERE ld.loanType=0 AND sm.schoolID=$schoolID $where2 AND $where";
+		$sqlLoan = "SELECT e.noofdays,sm.*,ld.created as loanDate,ld.*,p.* $select FROM `studentmaster` as sm INNER JOIN parentmaster as p on p.parentID=sm.parentID LEFT JOIN loandetails ld ON sm.studentID=ld.studentID $innerjoin WHERE ld.loanType=0 AND e.emiStatus=0 AND sm.schoolID=$schoolID $where2 AND $where GROUP BY e.loanID";
 		$queryLoan = $this->db->query($sqlLoan);
-		$resultArray = $queryLoan->result_array();		
-								
+		$resultArray = $queryLoan->result_array();			
+		
 		return $resultArray;
+
 	}
 	public function getfeeadjustmentreport()
 	{
@@ -1368,7 +1399,7 @@ class ServiceModel extends CI_Model{
 		$result = $queryemi->result_array();
 		foreach($result as $val){
 			$loanID = $val['loanID'];
-			$sqlemi2 = "SELECT * FROM `emischedule` emi INNER JOIN studentmaster sm on sm.studentID=emi.studentID WHERE emi.loanID=$loanID and emi.emiStatus=2";
+			$sqlemi2 = "SELECT emi.*,ld.*,sm.*,ld.created as loanDate,concat(p.pfirstName,' ',p.plastName) as parentName,p.mobileNo FROM `emischedule` emi INNER JOIN loandetails as ld on ld.loanID=emi.loanID INNER JOIN studentmaster sm on sm.studentID=emi.studentID INNER JOIN parentmaster as p on p.parentID=sm.parentID WHERE emi.loanID=$loanID and emi.emiStatus=2";
 			$queryemi2 = $this->db->query($sqlemi2);
 			$resultEmidetails = $queryemi2->row_array();	
 			if(!empty($resultEmidetails)){

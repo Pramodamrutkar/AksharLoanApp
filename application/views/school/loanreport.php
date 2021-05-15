@@ -39,8 +39,8 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                     <th>Loan Date</th>
                                     <th>Tenor</th>
                                     <th>EMI</th>
-                                    <!-- <th>Overdue Amount</th>
-                                    <th>Days overdue</th> -->
+                                    <!-- <th>Overdue Amount</th> -->
+                                    <th>Days overdue</th>
                                     <th>Parent Name</th>
                                     <th>Mobile</th>
                                 </tr>
@@ -53,9 +53,10 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                         <td><?php echo $row['sfirstName']." ".$row['slastName']; ?></td>
                                         <td><?php echo $row['section']."".$row['standard']; ?></td>
                                         <td><?php echo $row['loanAmount']; ?></td>
-                                        <td><?php echo ($row['loanDate'] == NULL ? "-" : date('Y-m-d',strtotime($row['loanDate']))); ?></td>
+                                        <td><?php echo ($row['loanDate'] == NULL ? "-" : date('d-m-Y',strtotime($row['loanDate']))); ?></td>
                                         <td><?php echo $row['loantenure']; ?></td>
                                         <td><?php echo $row['emiAmount']; ?></td>
+                                        <td><?php echo $row['noofdays']; ?></td>
                                         <td><?php echo $row['pfirstName']." ".$row['plastName']; ?></td>
                                         <td><?php echo $row['mobileNo']; ?></td>
                                     </tr>

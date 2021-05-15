@@ -63,11 +63,11 @@
           <!--<li><a href="#"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice List">School Report</span></a> </li>
           <li><a href="#"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice View">Load Report</span></a> </li> -->
           <!--<li><a href="<?php //echo base_url();?>school/service/loanreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Loan Report</span></a> </li> -->
-          <li><a href="<?php echo base_url();?>school/service/loanreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Active Loan Report</span></a></li>
-          <li><a href="<?php echo base_url();?>school/service/closedloanreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Closed Loan Report</span></a> </li>
           <li><a href="<?php echo base_url();?>school/service/feesReport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Fees Report</span></a> </li>
-          <li><a href="<?php echo base_url();?>school/service/feeadjustmentreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Fee Adjustment Report</span></a> </li>
-          <li><a href="<?php echo base_url();?>school/service/paymentstransferred"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Payment Transferred</span></a> </li>
+          <li><a href="<?php echo base_url();?>school/service/paymentstransferred"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Payment By Akshar</span></a></li>
+          <li><a href="<?php echo base_url();?>school/service/loanreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Active Student Loans</span></a></li>
+          <li><a href="<?php echo base_url();?>school/service/feeadjustmentreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Adjusted during month</span></a> </li>
+          <!-- <li><a href="<?php echo base_url();?>school/service/closedloanreport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Closed Loan Report</span></a> </li>-->
           <li><a href="<?php echo base_url();?>school/service/studentReport"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Invoice Edit">Student Report</span></a> </li>
         </ul>
       </div>

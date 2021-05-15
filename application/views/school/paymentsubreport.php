@@ -34,9 +34,9 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                     <th>Name</th>
                     <th>Class</th>
                     <th>Section</th>
-                    <th>Amount</th>
+                    <th>Date</th>
                     <th>Loan/Remmittance</th>
-                    <th>Net Amount</th>
+                    <th width="180">Net transfer after margin</th>
                    </tr>
                 </thead>
                 <tbody>
@@ -47,7 +47,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                     <td><?php echo $data['sfirstName']." ".$data['slastName']; ?></td>
                     <td><?php echo $data['standard']; ?></td>
                     <td><?php echo $data['section']; ?></td>
-                    <td><?php echo $data['loanAmount']; ?></td>
+                    <td><?php echo date('d-m-Y',strtotime($data['loanDate'])); ?></td>
                     <td><?php echo ($data['loanType'] == 1 ? "Remmittance" : "Loan"); ?></td>
                     <td><?php 
                         if($data['loanType'] == 0){

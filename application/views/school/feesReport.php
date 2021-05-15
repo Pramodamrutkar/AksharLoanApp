@@ -43,6 +43,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                     <th>Parent Name</th>
                                     <th>Mobile Number</th>
                                     <th width="50">Closing Fees Outstanding</th>
+                                    <th>Action</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -60,6 +61,7 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                         <td><?php echo $row['pfirstName']." ".$row['plastName']; ?></td>
                                         <td><?php echo $row['mobileNo']; ?></td>
                                         <td><?php echo $row['currentPayableFees']; ?></td>
+                                        <td><a class="pageview" href="<?php echo base_url()."school/service/subfeesReport/".$row['studentID'] ?>" target="_blank">View</a></td>
                                     </tr>
                                 <?php  } ?>
                                 </tbody>

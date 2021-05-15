@@ -33,12 +33,16 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                             <table id="tableData" class="table" style="width:100%;">
                                 <thead>
                                 <tr>
-                                    
                                     <th>Name</th>
-                                    <th>Overdue EMI</th>
-                                    <th>Amount not due</th>
-                                    <th>Penalty</th>
-                                    <th width="150px;">Amount adjusted</th>
+                                    <th>Class</th>
+                                    <th>Loan Amount</th>
+                                    <th>Loan Date</th>
+                                    <th>Overdue EMIs</th>
+                                    <th>Balance Principle</th>
+                                    <th>Penal Interest</th>
+                                    <th width="150px;">Amount Adjusted</th>
+                                    <th>Parent Name</th>
+                                    <th>Mobile</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -47,11 +51,16 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
                                  ?>
                                     <tr>
                                         <td><?php echo $row['sfirstName']." ".$row['slastName']; ?></td>
+                                        <td><?php echo $row['standard']." ".$row['section']; ?></td>
+                                        <td><?php echo $row['loanAmount']; ?></td>
+                                        <td><?php echo date('d-m-Y',strtotime($row['loanDate'])); ?></td>
                                         <td><?php echo $row['emiAmount']; ?></td>
                                         <td><?php echo $row['amountNotoverdue']; ?></td>
                                         <td><?php echo round($row['noofdays'] * $row['perdaycharges']); ?></td>
                                         <td><?php $penalty = $row['noofdays'] * $row['perdaycharges'];
                                         echo round($penalty+ $row['emiAmount'] + $row['amountNotoverdue']); ?></td>
+                                        <td><?php echo $row['parentName']; ?></td>
+                                        <td><?php echo $row['mobileNo']; ?></td>
                                     </tr>
                                 <?php  } ?>
                                 </tbody>

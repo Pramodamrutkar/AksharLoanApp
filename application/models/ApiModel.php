@@ -83,7 +83,7 @@ class ApiModel extends CI_Model{
 			CURLOPT_FOLLOWLOCATION => true
 		));
 		$output = curl_exec($curl);
-		echo $output;
+		return $output;
 
 	/*	
 	  $curl = curl_init();

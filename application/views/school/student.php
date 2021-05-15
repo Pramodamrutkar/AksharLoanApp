@@ -70,13 +70,13 @@ $schoolName = $this->session->userdata('schoolData')["schoolName"];
       <div class="row">
         <div class="col s6">
           <div class="input-field">
-            <input type="text" id="sfirstName" name="sfirstName">
+            <input type="text" id="sfirstName" name="sfirstName" disabled>
             <label for="sfirstName"><span class="req">*</span>Student First Name</label>
           </div>
         </div>
 		<div class="col s6">
           <div class="input-field">
-            <input type="text" id="slastName" name="slastName">
+            <input type="text" id="slastName" name="slastName" disabled>
             <label for="slastName"><span class="req">*</span>Student Last Name</label>
           </div>
         </div>
