@@ -73,6 +73,7 @@ $route['(i?)parentpayfromownaccount'] = 'ApiController/parentpayfromownaccount';
 $route['(i?)checkemioverdues'] = 'ApiController/checkemioverdues';
 $route['(i?)repayment'] = 'ApiController/repayment';
 $route['(i?)parentloandetails'] = 'ApiController/parentloandetails';
+$route['(i?)savefeedback'] = 'ApiController/parentsavefeedback';
 
 //$route['(i?)getKycDetails'] = 'ApiController/getKycDetails';
 //$route['(i?)allocateLoan'] = 'ApiController/allocateLoan';

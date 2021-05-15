@@ -97,6 +97,11 @@ class ApiController extends CI_Controller{
             echo $this->ApiModel->getLoandetails();
         }
 
+        public function parentsavefeedback()
+        {
+            echo $this->ApiModel->saveFeedback();
+        }
+
         //staff login
         public function stafflogin(){
             echo $this->ApiModel->staffLoginMatchReturnOtp();

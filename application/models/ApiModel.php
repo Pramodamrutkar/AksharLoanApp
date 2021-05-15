@@ -1214,6 +1214,42 @@ $checkExistEntryQuery = $this->db->query($checkExistEntrysql);
 		}
 	}
 
+	public function saveFeedback()
+	{
+		$postArray = $this->input->post();
+		$ResultArray = array();
+		$UserData  = $this->VerifyStudentAccessToken($postArray["accessToken"]);
+		if($UserData == FALSE){
+			$Status='false';
+			$Message = "Invalid Access Token";
+		}else{
+			$this->form_validation->set_rules('comment', 'Comment', 'required');
+			if($this->form_validation->run() == FALSE){
+				$Status='false';
+				$Message = validation_errors();
+			}else{
+				$postArray = $this->input->post();
+				$postData = array(
+					"mobileNo" => $postArray["mobileNo"],
+					"commentTitle" => $postArray["commentTitle"],
+					"comment" => $postArray['comment'],
+					"created" => date('Y-m-d H:i:s'),
+					"updated" => date('Y-m-d H:i:s')
+				);
+				$this->db->insert("support",$postData);
+				$rowID = $this->db->insert_id();
+				if($this->db->affected_rows() > 0){
+					$Status='true';
+					$Message='Feedback added successfully';
+				}else{
+					$Status='false';
+					$Message='Error.';
+				}
+			}		
+		}
+		return json_encode(array("status" => $Status,"message" => $Message));	
+	}
+
 	//staff Login API start	
 	public function staffLoginMatchReturnOtp()
 	{
